@@ -1,0 +1,72 @@
+---
+output:
+  github_document:
+    html_preview: true
+---
+
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+
+# The `devel` set of functions
+
+
+## Overview
+
+This "package" is the development package. Do not attempt to load it as you
+would a typical package. It contains a loose testing ground of functionality
+that, if deemed sufficiently useful, will eventually be migrated into an
+appropriate member of the `somaverse`.
+
+
+----------------------------
+
+## Installation
+
+You cannot currently install the `devel` library from the command line, as 
+it is not a package *per se*. The simplest way to optain the functionality
+it contains is to load it along with the other 
+[`somaverse`](http://bitbucket.sladmin.com/projects/SV) packages
+using the `RStudio` **addin** feature, which behaves similar to 
+`devtools::load_all()`.
+
+```
+Addins Menu ->
+  SOMAOBJECTS ->
+    `Load Development Environment`
+```
+
+Alternatively, you may call the driver function directly from `SomaObjects`:
+
+```{r}
+# Help
+?SomaObjects::sp
+
+# Direct Call
+# Note: all objects, even non-exported, are accessible
+SomaObjects::sp()
+ls("package:devel")
+```
+
+
+----------
+
+#### LICENSE
+
+Please note that this SomaLogic, Inc. internal package is released with 
+a [LICENSE](LICENSE). By using in this package you agree to abide by its terms.
+
+
+-------------------------
+
+Created on `r Sys.Date()` by [Rmarkdown](https://github.com/rstudio/rmarkdown)
+(v`r utils::packageVersion("rmarkdown")`) and `r R.version$version.string`. 
