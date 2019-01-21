@@ -3,17 +3,19 @@ Type: Package
 Title: SomaLogic Inc. R Development Scripts
 Version: 2.3.1.9000
 Authors@R: c(
-    person("Stu", "Field", email = "sfield@somalogic.com", role = c("aut", "cre"))
-    )
-Description: This package is the development package.
-  Do not attempt to load. Functions of sufficient importance will 
-  be migrated into the SomaPackages properly as required.
+  person("Stu", "Field", email = "sfield@somalogic.com", role = c("aut", "cre"))
+  )
+Description: This "package" is the development package.
+  Do not attempt to load it as you would a typical package.
+  It contains a loose testing ground of functionality that,
+  if deemed sufficiently useful, will eventually be migrated into an
+  appropriate member of the 'somaverse'.
 License: GPL-3 | file LICENSE
 Depends: R (>= 3.4.0)
 Imports: latex2exp, igraph
 Suggests: testthat, knitr, car
-Enhances: SomaGlobals
-X-CRAN-COMMENT: This is the AAA team of scripts that may or may not make it to the show.
+X-CRAN-COMMENT: This is the AAA team of scripts that may or may 
+  not make it to the show.
 LazyLoad: true
 LazyData: true
 Language: en-US
