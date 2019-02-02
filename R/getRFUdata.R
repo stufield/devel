@@ -1,10 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-##################################
 
 #' Get Data Matrix of RFU Data Only
 #'

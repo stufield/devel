@@ -1,10 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-#####################
 
 #' Summarize dimensions of list of data frames
 #'

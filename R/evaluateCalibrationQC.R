@@ -1,10 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-######################
 
 #' Evaluate calibration via QC
 #'

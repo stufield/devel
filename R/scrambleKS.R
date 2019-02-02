@@ -1,12 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-#############################
-#    Function:   scrambleKS
-#############################
 
 #' Scramble KS-distances
 #'

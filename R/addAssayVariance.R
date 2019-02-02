@@ -1,10 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-######################
 
 #' Add assay Noise to CDF plot
 #'

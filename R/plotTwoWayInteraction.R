@@ -1,10 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-######################
 
 #' Plot & Perform two-way ANOVA
 #'

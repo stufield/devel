@@ -1,12 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-###############################
-#         Function:   ls.env
-###############################
 
 #' List Object Size in an Environment
 #'
@@ -22,15 +13,13 @@
 #' @seealso \code{\link[base]{ls}}, \code{\link{switch}},
 #' \code{\link{get}}, \code{\link[pryr]{object_size}}
 #' @examples
-#'
 #' lsObjects()
 #' lsObjects("pkg.data")
 #' lsObjects("SomaGlobals")
-#'
 #' @importFrom pryr object_size
 #' @importFrom magrittr set_names
 #' @importFrom purrr map_chr map_dbl
-#' @importFrom tibble as.tibble
+#' @importFrom tibble as_tibble
 #' @export lsObjects
 lsObjects <- function(env = .GlobalEnv, units = "MB") {
 
@@ -40,22 +29,23 @@ lsObjects <- function(env = .GlobalEnv, units = "MB") {
   denom <- switch(units, KB = 1000, MB = 1000^2, GB = 1000^3, 1)
   key   <- list("size") %>% magrittr::set_names(units)
   obj   <- ls(env)
-  obj.list <- list()
-  obj.list$object <- obj
-  obj.list$size   <- purrr::map_dbl(obj, ~pryr::object_size(get(.x, env)))
-  obj.list$dim  <- purrr::map_chr(obj, function(.x) {
-                         o <- get(.x, env)
-                         if ( inherits(o, "function") ) {
-                            ""
-                         } else if ( !is.null(dim(o)) ) {
-                            paste(dim(o), collapse = " x ")
-                         } else {
-                            as.character(length(o))
-                         }
-       })
-  obj.list$class <- purrr::map_chr(obj, function(.x)
+  obj_list <- list()
+  obj_list$object <- obj
+  obj_list$size   <- purrr::map_dbl(obj, ~pryr::object_size(get(.x, env)))
+  obj_list$dim   <- purrr::map_chr(obj, function(.x) {
+                          o <- get(.x, env)
+                          if ( inherits(o, "function") ) {
+                             ""
+                          } else if ( !is.null(dim(o)) ) {
+                             paste(dim(o), collapse = " x ")
+                          } else {
+                             as.character(length(o))
+                          }
+    })
+  obj_list$class <- purrr::map_chr(obj, function(.x)
                            paste(class(get(.x, env)), collapse = ", "))
-  tibble::as.tibble(obj.list) %>%
+  obj_list %>%
+    tibble::as_tibble() %>%
     dplyr::mutate(size = size / denom %>% round(2L)) %>%
     dplyr::arrange(size) %>%
     dplyr::rename(!!!key)

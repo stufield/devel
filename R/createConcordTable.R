@@ -1,12 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-###########################################
-#			Function:	createConcordTable
-###########################################
 
 #' Create Concordance Table
 #'

@@ -1,10 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-######################
 
 get_pars <- function(x) { as.list(x$pars) }
 

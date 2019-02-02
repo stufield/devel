@@ -1,12 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-#################################
-#       Function: scrambleClasses
-#################################
 
 #' Scramble Class Variable in Data Frame
 #'

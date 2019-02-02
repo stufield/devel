@@ -1,10 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-#####################
 
 #' Get SomaSciences Menu Content
 #'

@@ -1,12 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-############################
-#         Function:   lss
-############################
 
 #' List Env Functions & Objects (deprecate?)
 #'

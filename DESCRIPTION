@@ -21,6 +21,6 @@ LazyData: true
 Language: en-US
 URL: www.somalogic.com
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr

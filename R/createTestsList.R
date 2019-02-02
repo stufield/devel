@@ -1,10 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-#####################
 
 #' Create Various Stat Test Tables
 #'
@@ -13,7 +6,7 @@
 #' Available tests are:
 #' \describe{
 #'   \item{`t`}{t.test}
-#'   \item{`wilcox`{mann-whitney}
+#'   \item{`wilcox`}{mann-whitney}
 #'   \item{`ks`}{ks.test}
 #'   \item{`lr`}{log ratio}
 #'   \item{`cor`}{pearson or spearman}
@@ -21,14 +14,14 @@
 #' }
 #' @param dat.list A named list of data frames containing SOMAmer data.
 #' @param test Matched String. Which statistical test to perform.
-#' @param which.paired which \code{dat.list} entries are paired analyses
+#' @param which.paired which `dat.list` entries are paired analyses
 #' (user must order properly)
 #' @param ... Additional arguments passed through to the eventual "test fun",
-#' e.g. \code{\link[stats]{t.test}}.
+#' e.g. `\link[stats]{t.test}`.
 #' @return A named list of class "data.frame" tables, one for each entry of
 #' \code{dat.list}.
 #' @author Stu Field
-#' @seealso \code{\link[base]{get}}, \code{\link[base]{setdiff}}
+#' @seealso \code{\link{get}}
 #' @examples
 #' age_dfs <- split(sample.adat, sample.adat$TimePoint) # split by Young/Old
 #' sapply(age_dfs, function(x) table(x$SampleGroup))
@@ -40,38 +33,35 @@ createTestsList <- function(dat.list,
                             which.paired = numeric(0), ...) {
 
   if ( inherits(dat.list, "data.frame") ) {
-    stop(
+    rlang::signal(
       stringr::str_glue(
         "The `dat.list =` argument is a single data.frame, but \\
         should be a LIST of data frames.
         Maybe you should try `calc.x()` directly?"
-        ),
-      call. = FALSE)
+        ), "error")
   }
 
   if ( is.null(names(dat.list)) ) {
-    stop("The `dat.list =` argument must be a *named* list.",
-         call. = FALSE)
+    rlang::signal("The `dat.list =` argument must be a *named* list.",
+                  "error")
   }
 
   test <- match.arg(test)
 
   if ( !is.numeric(which.paired) || (length(which.paired) > 0 && max(which.paired) > length(dat.list)) ) {
-    stop(
+    rlang::signal(
       stringr::str_glue(
         "Bad `which.paired =` argument. Should be numeric.
         Which `dat.list` entries are to be paired analyses?"
-        ),
-      call. = FALSE)
+        ), "error")
   }
 
   if ( test == "mackwolfe" && any(!c("factor.order", "group.field") %in% names(list(...))) ) {
-    stop(
+    rlang::signal(
       stringr::str_glue(
         "If performing a Mack-Wolfe test, you must pass both \\
         the `group.field =` and `factor.order =` arguments."
-        ),
-      call. = FALSE)
+        ), "error")
   }
 
   which_unpaired <- setdiff(seq(length(dat.list)), which.paired)

@@ -1,12 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-#################################
-#         Function:   plotHemo
-#################################
 
 #' Plot Hemoglobin vs Haptoglobin
 #'

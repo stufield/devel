@@ -1,12 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-###########################################
-#         Function:   quantileNormalize
-###########################################
 
 #' Perform Quantile Normalization
 #'

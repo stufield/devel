@@ -1,10 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Id$
-# $Author$
-# $Date$
-######################
 
 #' Independent Components Analysis (ICA)
 #'

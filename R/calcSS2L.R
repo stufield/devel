@@ -1,3 +1,4 @@
+# ------------------------------------------------------------------------
 ## testing a two-factor A,B decomposition, with B(A) and possibly unbalanced
 # y_ijk = mu + alpha_i + beta_ij(i) + r_ij(i)k(i,j)
 # We have:

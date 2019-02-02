@@ -1,12 +1,3 @@
-# --------------------
-# Revision Info
-# --------------------
-# $Revision$
-# $Author$
-# $LastChangedDate$
-####################################
-#    Function:   calcPairwiseTables
-####################################
 
 #' Pairwise Comparison Tables
 #'
