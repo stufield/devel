@@ -16,14 +16,15 @@
 #' names(x) <- head(LETTERS, length(x))
 #' calcPercentileTable(x)
 #' @importFrom purrr map
-#' @importFrom magrittr set_names
+#' @importFrom rlang signal
 #' @importFrom stats quantile
 #' @export calcPercentileTable
 calcPercentileTable <- function(x, probs = c(0.05, 0.25, 0.5, 0.75, 0.95)) {
   if ( !inherits(x, "list") || is.null(names(x)) ) {
-    stop("The `x =` argument must be a *named* list.",
-         names(x), call. = FALSE)
+    rlang::signal(
+      paste("The `x =` argument must be a *named* list.", names(x)),
+      "error")
   }
-  purrr::map(x, ~quantile(.x, probs = probs)) %>%
+  purrr::map(x, ~ quantile(.x, probs = probs)) %>%
     data.frame()
 }

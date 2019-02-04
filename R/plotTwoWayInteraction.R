@@ -26,23 +26,23 @@
 #' plotTwoWayInteraction(test_data, y = "z", var = c("Response", "TimePoint"),
 #'                       levels = list(c("Disease", "Control"), NULL))
 #' @importFrom graphics lines boxplot axis
+#' @importFrom rlang signal
 #' @export plotTwoWayInteraction
 plotTwoWayInteraction <- function(dat, y, var,
                                   levels = list(NULL, NULL),
                                   shift = 0.25, do.int = FALSE,
                                   y.lab = NULL, ...) {
 
-  df <- dat[, c(var, y) ]
+  df <- dplyr::filter(dat, y, var)
 
   if ( length(var) != 2 ) {
-    stop(
+    rlang::signal(
       stringr::str_glue(
         "The `var =` agrument must be of length 2 indicating \\
         the column names of the 2 factors, e.g. c('Group', 'Time')
         Currently var = {vars}",
         vars = paste0(var, collapse = ", ")
-        ),
-      call. = FALSE)
+        ), "error")
   }
 
   if ( is.null(levels[[1]]) ) {

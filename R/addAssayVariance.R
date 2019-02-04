@@ -18,6 +18,7 @@
 #' \code{\link[stats]{rnorm}}, \code{\link[SomaGlobals]{plotCDF}}
 #' @examples
 #'
+#' @importFrom rlang signal
 #' @importFrom stats rnorm
 #' @export addAssayVariance
 addAssayVariance <- function(apt, apt.median, assay.var = NULL, mad = NULL,
@@ -31,8 +32,9 @@ addAssayVariance <- function(apt, apt.median, assay.var = NULL, mad = NULL,
     if ( is.null(mad) ) {
       matrix.type <- match.arg(matrix.type)
       if ( is.na(matrix.type) ) {
-        stop("Must provide `matrix.type =` argument: is this plasma or serum?",
-             call. = FALSE)
+        rlang::signal(
+          "Must provide `matrix.type =` argument: is this plasma or serum?",
+          "error")
       }
       mad <- mLod[[matrix.type]][ matchSeqIds(apt, rownames(mLod[[matrix.type]])), "madNQCreplicate"]
     }
@@ -40,12 +42,11 @@ addAssayVariance <- function(apt, apt.median, assay.var = NULL, mad = NULL,
   } else if ( is.null(mad) ) {
     assay_sd <- sqrt(assay.var)
   } else {
-    stop(
+    rlang::signal(
       stringr::str_glue(
         "Unable to determine assay variance: provide \\
         either `assay.var =`, `mad =`, or pass neither."
-        ),
-      call. = FALSE)
+        ), "error")
   }
 
   if ( is.finite(assay_sd) ) {

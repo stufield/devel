@@ -23,6 +23,7 @@
 #' }
 #' @importFrom seriation seriate get_order
 #' @importFrom stats cor qt
+#' @importFrom rlang signal
 #' @export clusterCorHeatmaps
 clusterCorHeatmaps <- function(data, cor.method = "spearman",
                                cluster.method = "OLO",
@@ -30,18 +31,16 @@ clusterCorHeatmaps <- function(data, cor.method = "spearman",
                                thresh = NULL, ...) {
 
   if ( missing(data) ) {
-    stop("Must provide a data matrix or data frame!",
-         call. = FALSE)
+    rlang::signal("Must provide a data matrix or data frame!", "error")
   }
 
   if ( any(!apply(data, 2, is.numeric))) {
-    stop(
+    rlang::signal(
       stringr::str_glue(
         "All entries *must* be numeric to correctly \\
         produce a correlation matrix. Is there meta data?
         Perhaps pre-process with `stripMeta()`?"
-        ),
-      call. = FALSE)
+        ), "error")
   }
 
   if ( isSymmetric(data.matrix(data)) ) {
@@ -50,8 +49,8 @@ clusterCorHeatmaps <- function(data, cor.method = "spearman",
     title     <- "Correlation Heatmap Image"
   } else {
     if ( is.null(colnames(data)) ) {
-      stop("Data frame or correlation matrix must have column names.",
-           call. = FALSE)
+      rlang::signal("Data frame or correlation matrix must have column names.",
+                    "error")
     }
     title <- stringr::str_glue(
                "Correlation Heatmap | {cor.method} | (all values)"
@@ -101,7 +100,7 @@ clusterCorHeatmaps <- function(data, cor.method = "spearman",
   cluster.tab  <- table(clusters)
   clusters.out <- lapply(1:length(cluster.tab), function(n)
                          colnames(adjMat)[clusters == n]) %>%
-    magrittr::set_names(sprintf("cluster%i", 1:length(cluster.tab)))
+    purrr::set_names(sprintf("cluster%i", 1:length(cluster.tab)))
 
   list(image.matrix = plot_matrix,
        adjMat       = adjMat,

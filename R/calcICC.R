@@ -13,7 +13,7 @@
 #' @references Sokal and Rohlf, pg. 214, 2nd ed.
 #' @examples
 #'
-#' @importFrom magrittr set_names
+#' @importFrom rlang signal
 #' @export calcICC
 calcICC <- function(x, do.log = FALSE, alpha = 0.05) {
 
@@ -34,8 +34,8 @@ calcICC <- function(x, do.log = FALSE, alpha = 0.05) {
   n_o <- (1 / (length(x) - 1)) * (sum(group_n) - (sum(group_n^2) / sum(group_n)))
 
   if ( n_o > mean(group_n) ) {
-    stop("n_o > mean sample size: check calculation & sample sizes.",
-         call. = FALSE)
+    rlang::signal(
+      "n_o > mean sample size: check calculation & sample sizes.", "error")
   }
 
   ss_within <- sum(sapply(x, function(.i) sum((mean(.i) - .i)^2) ))
@@ -56,7 +56,7 @@ calcICC <- function(x, do.log = FALSE, alpha = 0.05) {
   # CI95 for s2_between
   ci_lo <- ms_within / n_o * ( Fstat / Fc3 - 1 - (Fc1 / Fc3 - 1) * Fc1 / Fstat)
   ci_hi <- ms_within / n_o * ( Fstat * Fc4 - 1 + (1 - Fc4 / Fc2) *  1/ (Fc2 * Fstat))
-  ci95  <- c(ci_lo, ci_hi) %>% magrittr::set_names(c("2.5%", "97.5%"))
+  ci95  <- c(ci_lo, ci_hi) %>% purrr::set_names(c("2.5%", "97.5%"))
   ci95[ ci95 < 0 ] = 0
 
   aov_tab <- data.frame(

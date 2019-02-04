@@ -12,17 +12,19 @@
 #' @note The environment is attached in the *final* position
 #' in the search path.
 #' @author Stu Field
-#' @seealso \code{\link{sys.source}}, \code{\link{list.files}}, \code{\link{attach}}
+#' @seealso \code{\link{sys.source}}, \code{\link[fs]{dir_ls}}, \code{\link{attach}}
 #' @examples
 #' \dontrun{
 #' dir <- paste0(Sys.getenv("R_SOMA_DEV"), "sandbox", "/R")
 #' Sys.sourceDir(dir, envir.name = "sandbox")
 #' }
+#' @importFrom fs path_real dir_ls
+#' @importFrom rlang signal
 #' @export Sys.sourceDir
 Sys.sourceDir <- function(path, envir.name = "e") {
-	files <- list.files(path, pattern = "[.][Rr]$", full.names = TRUE)
+	files <- fs::dir_ls(path, regexp = "[.][Rr]$") %>% fs::path_real()
 	if ( length(files) == 0 ) {
-		stop("No *.R scripts present in: ", path, call. = FALSE)
+    rlang::signal(paste0("No *.R scripts present in: ", path), "error")
   }
 	if ( envir.name %in% search() ) {
 		detach(envir.name, unload = TRUE, force = TRUE, character.only = TRUE)

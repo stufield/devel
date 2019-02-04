@@ -49,16 +49,19 @@
 #' pvalueFDR(p4, plot = TRUE)
 #' @importFrom magrittr "%>%"
 #' @importFrom graphics abline grid legend
+#' @importFrom rlang signal
 #' @export pvalueFDR
 pvalueFDR <- function(p, alpha = 0.05, plot = FALSE, return.fdr = FALSE) {
 
   if ( length(alpha) != 1 ) {
-    stop("The `alpha =` argument must be a scalar value in [0, 1].",
-         call. = FALSE)
+    rlang::signal("The `alpha =` argument must be a scalar value in [0, 1].",
+                  "error")
   }
 
   m      <- length(p)
-  if ( return.fdr ) orig <- order(p)   # get orig order
+  if ( return.fdr ) {
+    orig <- order(p)                   # get orig order
+  }
   p_sort <- sort(p)                    # sorted p-values
   k_m    <- seq(m) / m                 # calc k/m; the penalty
   thresh <- k_m * alpha                # slope x alpha level

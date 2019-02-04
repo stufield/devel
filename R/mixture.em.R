@@ -12,24 +12,24 @@
 #' @param pi.hat value
 #' @return return_value
 #' @author Stu Field
-em.1.step <- function(y, mu1, mu2, sd1, sd2, pi.hat) {
+em_1_step <- function(y, mu1, mu2, sd1, sd2, pi.hat) {
 
-   # responsibilities of distribution #2
-   gamma      <- pi.hat * dnorm(y, mu2, sd2) / ((1-pi.hat) * dnorm(y, mu1, sd1) +
-                                            pi.hat * dnorm(y, mu2, sd2))
-   new.mu1    <- sum((1-gamma)*y) / sum(1-gamma)
-   new.mu2    <- sum(gamma*y) / sum(gamma)
-   new.var1   <- sum((1-gamma)*(y-mu1)^2) / sum(1-gamma)   # this is variance
-   new.var2   <- sum(gamma*(y-mu2)^2) / sum(gamma)         # this is variance
-   new.pi.hat <- mean(gamma)
-   LL         <- log( (1 - new.pi.hat) * dnorm(y, new.mu1, sqrt(new.var1)) +
-                     new.pi.hat * (dnorm(y, new.mu2, sqrt(new.var2))) )
+  # responsibilities of distribution #2
+  gamma      <- pi.hat * dnorm(y, mu2, sd2) / ((1-pi.hat) * dnorm(y, mu1, sd1) +
+    pi.hat * dnorm(y, mu2, sd2))
+  new.mu1    <- sum((1 - gamma) * y) / sum(1-gamma)
+  new.mu2    <- sum(gamma*y) / sum(gamma)
+  new.var1   <- sum((1 - gamma) * (y - mu1)^2) / sum(1 - gamma)   # this is variance
+  new.var2   <- sum(gamma*(y - mu2)^2) / sum(gamma)         # this is variance
+  new.pi.hat <- mean(gamma)
+  LL         <- log( (1 - new.pi.hat) * dnorm(y, new.mu1, sqrt(new.var1)) +
+                    new.pi.hat * (dnorm(y, new.mu2, sqrt(new.var2))) )
 
-   list(mu=c(new.mu1, new.mu2),
-        sigma=c(sqrt(new.var1), sqrt(new.var2)),
-        pi.hat=new.pi.hat,
-        loglik=sum(LL),
-        responsibilities_2=gamma)
+  list(mu = c(new.mu1, new.mu2),
+       sigma = c(sqrt(new.var1), sqrt(new.var2)),
+       pi.hat = new.pi.hat,
+       loglik = sum(LL),
+       responsibilities_2 = gamma)
 }
 
 
@@ -43,15 +43,16 @@ em.1.step <- function(y, mu1, mu2, sd1, sd2, pi.hat) {
 #' @param k value
 #' @return return_value
 #' @author Stu Field
-choose.init <- function(y, k=2) {
-      bins <- split(y, sample(1:k, length(y), replace=TRUE))
-      emp.mu <- sapply(bins, mean)
-      emp.sd <- sapply(bins, sd)
-      if ( any(emp.sd==0) )
-         emp.sd[which(emp.sd==0)] = runif (sum(emp.sd==0), 0, sd(data))
-      sigma.k <- 1/rexp(k, rate=emp.sd)
-      mu.k <- rnorm(k, mean=emp.mu, sd=sigma.k)
-      list(mu=mu.k, sigma=sigma.k, pi.hat=runif (1))
+choose_init <- function(y, k = 2) {
+  bins   <- split(y, sample(1:k, length(y), replace = TRUE))
+  emp.mu <- sapply(bins, mean)
+  emp.sd <- sapply(bins, sd)
+  if ( any(emp.sd == 0) ) {
+    emp.sd[which(emp.sd==0)] = runif (sum(emp.sd == 0), 0, sd(data))
+  }
+  sigma.k <- 1/rexp(k, rate = emp.sd)
+  mu.k <- rnorm(k, mean = emp.mu, sd = sigma.k)
+  list(mu = mu.k, sigma = sigma.k, pi.hat = runif(1))
 }
 
 
@@ -65,15 +66,12 @@ choose.init <- function(y, k=2) {
 #' @param data value
 #' @param pars Values for start.sd, start.pi, max.iter, max.restarts, and eps
 #' @return A list containing:
-#' @note %% ~~ further notes ~~
 #' @author Stu Field
 #' @references Tibshirani and Hastie; Bible
 #' @examples
-#'
 #' x <- c(rnorm(50,mean=10),rnorm(50,mean=25))
-#'
-#' @export normal.k2.mixture
-normal.k2.mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
+#' @export normal_k2_mixture
+normal_k2_mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
                                                 start.sd = c(NULL, NULL),
                                                 start.pi = NULL),
                               max.iter = 1000, max.restarts = 25, eps = 1e-08) {
@@ -81,9 +79,10 @@ normal.k2.mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
   good_names <- c("start.mu", "start.sd", "start.pi")
 
   if ( any(!names(pars) %in% good_names) ) {
-    cat("  Should be:", paste(good_names,collapse = ", "), "\n")
-    cat("  Names are:", names(pars), "\n")
-    stop("Check spelling of list names for `pars =` argument.")
+    message(paste("Should be:", paste(good_names, collapse = ", ")))
+    message(paste("   Names are:", names(pars)))
+    rlang::signal("Check spelling of list names for `pars =` argument."
+                  "error")
   }
 
   pars <- purrr::map(good_names, function(x) {
@@ -96,7 +95,7 @@ normal.k2.mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
     magrittr::set_names(good_names)
 
   if ( any(sapply(pars, is.null)) ) {
-    tmp.pars <- choose.init(y = data)
+    tmp.pars <- choose_init(y = data)
   }
 
   mu.par    <- if ( any(is.null(pars$start.mu)) ) tmp.pars$mu else pars$start.mu
@@ -111,7 +110,7 @@ normal.k2.mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
 
   while ( dll > eps ) {
     iter      <- iter + 1
-    tmp       <- em.1.step(y = data,
+    tmp       <- em_1_step(y = data,
                            mu1 = mu.par[1],
                            mu2 = mu.par[2],
                            sd1 = sigma.par[1],
@@ -120,20 +119,21 @@ normal.k2.mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
     mu.par    <- tmp$mu
     sigma.par <- tmp$sigma
     pi.par    <- tmp$pi.hat
-    dll       <- abs(loglik-tmp$loglik)
+    dll       <- abs(loglik - tmp$loglik)
     loglik.vec[iter] <- tmp$loglik
     loglik    <- tmp$loglik
     if ( iter >= max.iter || min(sigma.par) < 1e-06 ) {
       message(" No convergence ... OR ... One of the variances is going to zero.")
       message(" Restarting with new initial conditions.")
-      new.pars  <- choose.init(y=data)
+      new.pars  <- choose_init(y = data)
       mu.par    <- new.pars$mu
       sigma.par <- new.pars$sigma
       pi.par    <- new.pars$pi.hat
       restarts  <- restarts + 1
       if ( restarts > max.restarts ) {
-        stop("Too many restarts. Possible extreme outliers in distribution.",
-             call. = FALSE)
+        rlang::signal(
+          "Too many restarts. Possible extreme outliers in distribution.",
+          "error")
       }
       iter   <- 0
       loglik <- 0
@@ -142,7 +142,7 @@ normal.k2.mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
     }
   }
 
-  cat(" Iteration ...", iter, "\n")
+  message(" Iteration ...", iter, "\n")
 
   list(y = data,
        mu = as.numeric(mu.par),
@@ -154,7 +154,7 @@ normal.k2.mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
        niter = iter,
        restarts = restarts,
        posterior = tmp$responsibilities_2,
-       fn = "normal.k2.mixture") %>%
+       fn = "normal_k2_mixture") %>%
     addClass("mix_k2")
 }
 
@@ -164,8 +164,8 @@ normal.k2.mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
 #'
 #' S3 method for "mix_k2" objects
 #'
-#' @rdname normal.k2.mixture
-#' @param x A `mix_k2` object generated from \code{\link{normal.k2.mixture}}
+#' @rdname normal_k2_mixture
+#' @param x A `mix_k2` object generated from \code{\link{normal_k2_mixture}}
 #' @param type Character. Matched string one of: "density", "likelihood" or "posterior".
 #' @param title Character. Title for the plot.
 #' @param ... Passed to \code{\link{hist}}.
@@ -217,7 +217,10 @@ plot.mix_k2 <- function(x, type = c("density", "likelihood", "posterior"),
     axis(1, at = x$y, labels = NA, col.ticks = 3, lwd.ticks = 2, tcl = 0.5)
 
   } else {
-    stop("Invalid `type =` argumnet passed to `plot()`.", type, call. = FALSE)
+    rlang::signal(
+      paste("Invalid `type =` argumnet passed to `plot()`.",
+            type),
+      "error")
   }
 
 }
@@ -228,23 +231,21 @@ plot.mix_k2 <- function(x, type = c("density", "likelihood", "posterior"),
 #'
 #' Calculate the point of equal likelihood between 2 distributions
 #'
-#' @rdname normal.k2.mixture
+#' @rdname normal_k2_mixture
 #' @return A scalar
 #' @author Kirk DeLisle
 #' @examples
 #' equal.likelihood.pt(x)
 #' @export
 equal.likelihood.pt <- function(x) {
-
   stopifnot(inherits(x, "mix_k2"))
   a <- (1 / (2 * x$sigma[1]^2)) - (1/(2*x$sigma[2]^2))
-  b <- (x$mu[2]/x$sigma[2]^2) - (x$mu[1]/x$sigma[1]^2)
-  c <- (x$mu[1]^2/(2*x$sigma[1]^2)) - (x$mu[2]^2/(2*x$sigma[2]^2)) -
-    (log(x$sigma[2]/x$sigma[1]*x$lambda[1]/x$lambda[2]))
+  b <- (x$mu[2] / x$sigma[2]^2) - (x$mu[1] / x$sigma[1]^2)
+  c <- (x$mu[1]^2 / (2 * x$sigma[1]^2)) - (x$mu[2]^2 / (2 * x$sigma[2]^2)) -
+    (log(x$sigma[2] / x$sigma[1] * x$lambda[1] / x$lambda[2]))
   lik <- numeric(2)
-  lik[1] <- (-b + sqrt(b^2 - 4*a*c)) / (2*a)
-  lik[2] <- (-b - sqrt(b^2 - 4*a*c)) / (2*a)
+  lik[1] <- (-b + sqrt(b^2 - 4 * a * c)) / (2 * a)
+  lik[2] <- (-b - sqrt(b^2 - 4 * a * c)) / (2 * a)
   lik[which(lik > min(x$mu) && lik < max(x$mu))]
-
 }
 

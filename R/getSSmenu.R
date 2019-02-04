@@ -12,6 +12,7 @@
 #' @examples
 #' getSSmenu("v1.1k_v01") %>% head(10)
 #' @importFrom stringr str_glue str_squish
+#' @importFrom rlang signal
 #' @export getSSmenu
 getSSmenu <- function(menu.ver) {
 
@@ -22,7 +23,7 @@ getSSmenu <- function(menu.ver) {
       names of SSmenu object: {menu.ver}."
       ) %>%
       stringr::str_squish() %>%
-      stop(call. = FALSE)
+      rlang::signal("error")
   }
 
   atts <- attributes(menu)

@@ -4,40 +4,41 @@
 #' Performs calibration using robust linear model fitting to account for
 #' scale and bias shifts in RFU between runs.
 #'
-#' @param data1 A data frame of class "soma.adat" containing RFU values from
+#' @param data1 A data frame of class `soma_adat` containing RFU values from
 #' a previous run.
-#' @param data2 A data frame of class "soma.adat" containing RFU values from
+#' @param data2 A data frame of class `soma_adat` containing RFU values from
 #' a new assay run with RFU values to be calibrated using robust linear calibration.
 #' @param apts Which features (columns) in the objects to calibrate. Can be a
-#' subset of the total features. If \code{apts=NULL} (default), the intersect of both
+#' subset of the total features. If `apts = NULL` (default), the intersect of both
 #' data frames is used and each feature is calibrated.
 #' @param data1.id Column name used as row identifiers to order and sync the data frames.
 #' @param data2.id Column name used as row identifiers to order and sync the data frames.
 #' By default, the same string is used for both data frames.
 #' @param verbose Logical. Print out diagnostic information as function runs?
-#' @return A calibrated data frame "soma.adat" object containing all meta data and the
+#' @return A calibrated data frame `soma_adat` object containing all meta data and the
 #' intersect of the feature data between the two data objects.
 #' @author Stu Field
 #' @seealso \code{\link[SomaPlyr]{getAptamers}}, \code{\link[SomaPlyr]{getMeta}}
 #' @examples
 #'
-#' @export rlm.calibration
-rlm.calibration <- function(data1, data2, apts = NULL, data1.id,
+#' @importFrom rlang signal
+#' @export rlm_calibration
+rlm_calibration <- function(data1, data2, apts = NULL, data1.id,
                             data2.id = data1.id, verbose = TRUE) {
 
   if ( missing(data1.id) ) {
-    stop("Must provide `data1.id =` column name to match sample IDs.",
-         call. = FALSE)
+    rlang::signal("Must provide `data1.id =` column name to match sample IDs.",
+                  "error")
   }
 
   if ( !data1.id %in% names(data1) ) {
-    stop("Column name not found in `data1`: ", data1.id,
-         call. = FALSE)
+    rlang::signal(paste("Column name not found in `data1`:", data1.id),
+                  "error")
   }
 
   if ( !data2.id %in% names(data2) ) {
-    stop("Column name not found in `data2`:", data2.id,
-         call. = FALSE)
+    rlang::signal(paste("Column name not found in `data2`:", data2.id),
+                  "error")
   }
 
   # reduce the datasets to matching ids and align them; just for fitting the linear model
@@ -55,8 +56,9 @@ rlm.calibration <- function(data1, data2, apts = NULL, data1.id,
   if ( median(fit.data2[[apts[1]]], na.rm = TRUE) > 10 || median(fit.data1[[apts[1]]], na.rm = TRUE) > 10 ) {
     do.log <- TRUE
     if ( verbose ) {
-      warning("*  Values converted to log-space for model fitting and back to linear space",
-              call. = FALSE)
+      rlang::signal(
+        "Values converted to log-space for model fitting and back to linear space",
+        "warning")
     }
   } else {
     do.log <- FALSE
@@ -105,7 +107,7 @@ rlm.calibration <- function(data1, data2, apts = NULL, data1.id,
 
 #' Data Catch
 #'
-#' A simple trap catch used internally to \code{\link{rlm.calibration}}
+#' A simple trap catch used internally to \code{\link{rlm_calibration}}
 #' that is meant to catch any data mismatches that would cause the model
 #' fitting to fail.
 #'
@@ -126,25 +128,27 @@ data.catch <- function(d1, d2, ...) {
   id2  <- dots$id2
 
   if ( any(d1[[id1]] != d2[[id2]]) ) {
-    stop("Mismatch in bridging samples. The row ordering may have failed.",
-         call. = FALSE)
+    rlang::signal(
+      "Mismatch in bridging samples. The row ordering may have failed.",
+      "error")
   }
 
   if ( dim(d1)[1] == 0 || dim(d2)[1] == 0 ) {
-    stop("Row matching failure. No matching rows found.",
-         call. = FALSE)
+    rlang::signal("Row matching failure. No matching rows found.", "error")
   }
 
   if ( any(!apts%in%names(d1)) ) {
     ss <- setdiff(apts, names(d1))
-    stop("Names mismatch between `apts` and names of `data1`: ",
-         paste(ss, collapse = ", "), call. = FALSE)
+    rlang::signal(
+      paste("Names mismatch between `apts` and names of `data1`: ",
+            paste(ss, collapse = ", ")), "error")
   }
 
-  if ( any(!apts%in%names(d2)) ) {
+  if ( any(!apts %in% names(d2)) ) {
     ss <- setdiff(apts, names(d2))
-    stop("Names mismatch between `apts` and names of `data2`: ",
-         paste(ss, collapse = ", "), call. = FALSE)
+    rlang::signal(
+      paste("Names mismatch between `apts` and names of `data2`: ",
+            paste(ss, collapse = ", ")), "error")
   }
 }
 

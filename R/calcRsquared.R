@@ -19,8 +19,8 @@ calcRsquared <- function(model) {
   ss_tot <- sum((yi - mean(yi))^2)
   r2     <- 1 - ss_res / ss_tot
   if ( r2 < 0 ) {
-    warning("  Negative r^2 value indicates an inappropriate model",
-            call. = FALSE)
+    rlang::signal("Negative r^2 value indicates an inappropriate model",
+                  "warning")
   }
   return(r2)
 }

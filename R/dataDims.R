@@ -13,14 +13,15 @@
 #' tmp <- lapply(c(2, 3, 6, 8, 12), function(x) matrix(1:24, ncol = x))
 #' names(tmp) <- head(letters, 5)
 #' data_dims(tmp)
+#' @importFrom rlang signal
+#' @importFrom purrr compact
 #' @export data_dims
 data_dims <- function(x) {
   if ( is.null(names(x)) ) {
-    stop("`x` must be a *named* list of data frames.",
-         call. = FALSE)
+    rlang::signal("`x` must be a *named* list of data frames.", "error")
   }
   dim_list <- lapply(x, dim) %>%
-    Filter(Negate(is.null), .)
+    purrr::compact()
   do.call(rbind, dim_list) %>%
     data.frame() %>%
     magrittr::set_names(c("rows", "columns")) %>%

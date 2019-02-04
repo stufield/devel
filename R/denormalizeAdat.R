@@ -18,7 +18,10 @@
 #' @examples
 #' denormalizeAdat(sample.adat)
 #' @importFrom magrittr "%>%" "%<>%"
+#' @importFrom rlang signal
 #' @importFrom stringr str_remove_all
+#' @importFrom SomaReadr cleanNames
+#' @importFrom SomaNormalization getNormNames
 #' @export denormalizeAdat
 denormalizeAdat <- function(adat, ...) {
 
@@ -26,8 +29,8 @@ denormalizeAdat <- function(adat, ...) {
     sort() %>% cleanNames()
 
   if ( length(scale_names) == 0  ) {
-    stop("No median normalization scale factors detected in `adat`.",
-         call. = FALSE)
+    rlang::signal("No median normalization scale factors detected in `adat`.",
+                  "error")
   }
 
   mixes        <- getAptamerDilution(adat, drop.hyb = TRUE, ...)
@@ -38,8 +41,8 @@ denormalizeAdat <- function(adat, ...) {
   if ( (length(mixes) != length(scale_names)) || (!all(names(mixes) == scale_names)) ) {
     print(scale_names)
     print(names(mixes))
-    stop("Mis-match between dilution mixes and available scale factors.",
-         call. = FALSE)
+    rlang::signal(
+      "Mis-match between dilution mixes and available scale factors.", "error")
   }
 
   message("* Denormalizing ADAT ... {deparse(substitute(adat))}")

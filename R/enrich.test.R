@@ -29,6 +29,7 @@
 #' enrich_test(en_list)
 #' @importFrom stats fisher.test
 #' @importFrom cli rule
+#' @importFrom rlang signal
 #' @importFrom crayon blue
 #' @export enrich_test
 enrich_test <- function(x, alternative = c("two.sided", "enrich", "deplete")) {
@@ -42,8 +43,9 @@ enrich_test <- function(x, alternative = c("two.sided", "enrich", "deplete")) {
   } else if ( inherits(x, "list") & length(x) == 4 ) {
     # x must be passed as list with names:
     if ( is.null(names(x)) ) {
-      stop("List must be a *named* list with: 'n11', 'n1.', 'n.1', 'n'.",
-           call. = FALSE)
+      rlang::signal(
+        "List must be a *named* list with: 'n11', 'n1.', 'n.1', 'n'.",
+        "error")
     }
 
     n11 <- x$n11
@@ -53,7 +55,7 @@ enrich_test <- function(x, alternative = c("two.sided", "enrich", "deplete")) {
     n2. <- n - n1.
     x   <- matrix(c(n11, n.1 - n11, n1. - n11, n2. - (n.1 - n11)), ncol = 2)
   } else {
-    stop("Error in `x` argument. Incorrect format.", call. = FALSE)
+    rlang::signal("Error in `x` argument. Incorrect format.", "error")
   }
 
   ret <- list()

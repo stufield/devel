@@ -29,6 +29,8 @@
 #' finder("getInput", edit = TRUE)
 #' @importFrom utils apropos file.edit
 #' @importFrom stringr str_replace_all
+#' @importFrom purrr set_names
+#' @importFrom rlang signal
 #' @export finder
 finder <- function(what, edit = FALSE, pos = FALSE) {
 
@@ -39,13 +41,13 @@ finder <- function(what, edit = FALSE, pos = FALSE) {
   names(ret) <- search()[ idx ]                    # get which envir it lives
 
   if ( length(ret) == 0 ) {
-    writeLines(stringr::str_glue("* Pattern {what} not found"))
+    message(stringr::str_glue("* Pattern {what} not found"))
     return(character(0L))
   } else {
     names(ret) %<>% stringr::str_replace_all(":", "_")
     where <- which(search() %in% names(ret))
     if ( pos )
-      return(where %>% magrittr::set_names(names(ret)))
+      return(where %>% purrr::set_names(names(ret)))
   }
 
   if ( edit ) {
@@ -57,8 +59,8 @@ finder <- function(what, edit = FALSE, pos = FALSE) {
     }
 
     if ( !grepl("^Soma|^devel$", names(ret)) )
-      stop("You should not edit functions outside SomaPackages.",
-           call. = FALSE)
+      rlang::signal("You should not edit functions outside SomaPackages.",
+                    "error")
 
     if ( length(ret[[1]]) > 1 ) {
       cat("Which function:\n")
@@ -111,8 +113,9 @@ getInput <- function(x) {
   out <- as.numeric(readline("*  Enter #: "))
 
   if ( !out%in%seq_along(x) ) {
-    stop("Invalid entry. Please enter number: ",
-         paste(seq_along(x), collapse = ", "), call. = FALSE)
+    rlang::signal(
+      paste0("Invalid entry. Please enter number: ",
+             paste(seq_along(x), collapse = ", ")), "error")
   }
 
   return(out)

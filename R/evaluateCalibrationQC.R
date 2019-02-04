@@ -32,8 +32,9 @@
 #' \dontrun{
 #' evaluateCalibrationQC(calibrated.data)
 #' }
-#' @importFrom purrr map map_df
-#' @importFrom magrittr set_names set_rownames "%<>%" "%>%"
+#' @importFrom purrr map map_df set_names
+#' @importFrom magrittr set_rownames "%<>%" "%>%"
+#' @importFrom rlang signal
 #' @export evaluateCalibrationQC
 evaluateCalibrationQC <- function(cal.data, QCref = NULL) {
 
@@ -45,7 +46,7 @@ evaluateCalibrationQC <- function(cal.data, QCref = NULL) {
                                       SampleType == "QC") %>%
                               dplyr::arrange(SampleId)
     }) %>%
-    magrittr::set_names(stringr::str_replace_all(plates, "[^A-Za-z0-9]", "."))
+    purrr::set_names(stringr::str_replace_all(plates, "[^A-Za-z0-9]", "."))
 
   if ( is.null(QCref) ) {
     QCref <- filterAdat(cal.data, SampleType == "QC") %>%
@@ -53,8 +54,9 @@ evaluateCalibrationQC <- function(cal.data, QCref = NULL) {
   }
 
   if ( !all(rownames(QCref) == apts) ) {
-    stop("Something wrong with ordering of somamers in `QCref` vs. `cal.data`",
-         call. = FALSE)
+    rlang::signal(
+      "Something wrong with ordering of somamers in `QCref` vs. `cal.data`",
+      "error")
   }
 
   purrr::map(plate_data, function(plate) {
