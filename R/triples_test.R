@@ -14,61 +14,64 @@
 #'
 #'
 #' @export
-triples.test <- function(x, alpha=0.05) {
+triples_test <- function(x, alpha = 0.05) {
 
    n <- length(x)
 
    #if ( n <=10 )
-   #   warning('This test is inaccurate for distributions of n < 10')
+   #   rlang::signal(
+   #     "This test is inaccurate for distributions of n < 10",
+   #     "error") 
 
-   comb.iter <- t(combn(n,3))
-   #print(dim(comb.iter))
-   Zi <- sapply(seq(nrow(comb.iter)), function(i) {
-                ijk <- comb.iter[ i,]
+   comb_iter <- t(combn(n, 3))
+   #print(dim(comb_iter))
+   Zi <- sapply(seq(nrow(comb_iter)), function(i) {
+                ijk <- comb_iter[i, ]
                 lo <- x[ ijk[1] ]
                 middle <- x[ ijk[2] ]
                 up <- x[ ijk[3] ]
-                sign(lo+middle-2*up) + sign(lo+up-2*middle) + sign(middle+up-2*lo)
+                sign(lo + middle - 2 * up) + sign(lo + up - 2 * middle) + sign(middle + up - 2 * lo)
             })
 
    #print(Zi)
    TT <- sum(Zi)
    Bt <- sapply(1:n, function(i) {
-                which.i <- which(comb.iter==i, arr.ind=TRUE)[,1]
+                which.i <- which(comb_iter == i, arr.ind = TRUE)[, 1L]
                 #print(Zi[ which.i ])
                 sum(Zi[ which.i ])
             })
 
    print(Bt)
 
-   comb.iter.2 <- t(combn(n,2))   # all n.choose.2 pairwise combos
-   #print(dim(comb.iter.2))
-   Bst <- sapply(seq(nrow(comb.iter.2)), function(i) {
-                 which.st <- apply(comb.iter, 1, function(x) all(comb.iter.2[i,]%in%x))
+   comb_iter_2 <- t(combn(n, 2))   # all n.choose.2 pairwise combos
+   #print(dim(comb_iter_2))
+   Bst <- sapply(seq(nrow(comb_iter_2)), function(i) {
+                 which.st <- apply(comb_iter, 1, function(x) all(comb_iter_2[i, ] %in% x))
                  #print(Zi[ which.st ])
                  sum(Zi[ which.st ])
             })
 
    print(sum(Bst^2))
 
-   sigma1 <- sum(Bt^2) * ((n-3)*(n-4))/((n-1)*(n-2))
-   sigma2 <- sum(Bst^2) * (n-3)/(n-4)
-   sigma3 <- (n*(n-1)*(n-2)) / 6
-   sigma4 <- (1 - ((n-3)*(n-4)*(n-5)) / sigma3*6) * TT^2
-   #print(c(sigma1,sigma2,sigma3,sigma4))
+  sigma1 <- sum(Bt^2) * ((n - 3) * (n - 4)) / ((n - 1) * (n - 2))
+  sigma2 <- sum(Bst^2) * (n - 3) / (n - 4)
+  sigma3 <- (n * (n - 1) * (n - 2)) / 6
+  sigma4 <- (1 - ((n - 3) * (n - 4) * (n - 5)) / sigma3 * 6) * TT^2
+  #print(c(sigma1, sigma2, sigma3, sigma4))
 
-   var <- sigma1 + sigma2 + sigma3 - sigma4
-   #print(var)
+  var <- sigma1 + sigma2 + sigma3 - sigma4
+  #print(var)
 
-   z <- TT / sqrt(var)
-   p <- 2 * pnorm(-abs(z))
+  z <- TT / sqrt(var)
+  p <- 2 * pnorm(-abs(z))
 
-   if ( p>alpha )
-      cat('*  Ho = TRUE; the data are symmetric ...\n')
-   else
-      cat('*  Ho = FALSE; heavy tails detected ...\n')
+  if ( p > alpha ) {
+    message("* Ho = TRUE; the data are symmetric ...")
+  } else {
+    message("* Ho = FALSE; heavy tails detected ...")
+  }
 
-   data.frame(Zstat=z, p.value=p, Ho=p>alpha)
+  data.frame(Zstat = z, p.value = p, Ho = p > alpha)
 
 }
 
