@@ -16,9 +16,8 @@
 #' lsObjects()
 #' lsObjects("pkg.data")
 #' lsObjects("SomaGlobals")
-#' @importFrom pryr object_size
-#' @importFrom magrittr set_names
-#' @importFrom purrr map_chr map_dbl
+#' @importFrom lobstr obj_size
+#' @importFrom purrr map_chr map_dbl set_names
 #' @importFrom tibble as_tibble
 #' @export lsObjects
 lsObjects <- function(env = .GlobalEnv, units = "MB") {
@@ -31,8 +30,8 @@ lsObjects <- function(env = .GlobalEnv, units = "MB") {
   obj   <- ls(env)
   obj_list <- list()
   obj_list$object <- obj
-  obj_list$size   <- purrr::map_dbl(obj, ~pryr::object_size(get(.x, env)))
-  obj_list$dim   <- purrr::map_chr(obj, function(.x) {
+  obj_list$size   <- purrr::map_dbl(obj, ~ as.numeric(lobstr::obj_size(get(.x, env))))
+  obj_list$dim    <- purrr::map_chr(obj, function(.x) {
                           o <- get(.x, env)
                           if ( inherits(o, "function") ) {
                              ""
@@ -42,8 +41,8 @@ lsObjects <- function(env = .GlobalEnv, units = "MB") {
                              as.character(length(o))
                           }
     })
-  obj_list$class <- purrr::map_chr(obj, function(.x)
-                           paste(class(get(.x, env)), collapse = ", "))
+  obj_list$class <- purrr::map_chr(obj, 
+                        ~ paste(class(get(.x, env)), collapse = ", "))
   obj_list %>%
     tibble::as_tibble() %>%
     dplyr::mutate(size = size / denom %>% round(2L)) %>%

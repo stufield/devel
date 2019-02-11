@@ -12,7 +12,7 @@ Description: This "package" is the development package.
   appropriate member of the 'somaverse'.
 License: GPL-3 | file LICENSE
 Depends: R (>= 3.4.0)
-Imports: latex2exp, igraph
+Imports: latex2exp, igraph, lobstr
 Suggests: testthat, knitr, car
 X-CRAN-COMMENT: This is the AAA team of scripts that may or may 
   not make it to the show.

@@ -81,7 +81,7 @@ normal_k2_mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
   if ( any(!names(pars) %in% good_names) ) {
     message(paste("Should be:", paste(good_names, collapse = ", ")))
     message(paste("   Names are:", names(pars)))
-    rlang::signal("Check spelling of list names for `pars =` argument."
+    rlang::signal("Check spelling of list names for `pars =` argument.",
                   "error")
   }
 
@@ -219,8 +219,7 @@ plot.mix_k2 <- function(x, type = c("density", "likelihood", "posterior"),
   } else {
     rlang::signal(
       paste("Invalid `type =` argumnet passed to `plot()`.",
-            type),
-      "error")
+            type), "error")
   }
 
 }
