@@ -31,7 +31,12 @@
 #' @param n_points The number of points to compute and plot (distinct number of analytes to consider). Defaults
 #'   to 20 (or less if maximum number of analytes is less than 20)
 #' @param plot_title an optional string with the title for the plots (defaults to "Errors vs. model complexity")
-#' @param ... options to pass on to caret (like train.control)
+#' @param trControl optional trainControl list to pass to caret::train.
+#'   NOTE: this function does its own partitioning of the data for training/error comuptation,
+#'   so it uses trControl with method="none". It will override any value of method that you pass
+#'   in the trControl argument. If you really want to set trControl$method to
+#'   something other than "none", you must also pass trControl$forceMethod=TRUE
+#' @param ... additional options to pass on to caret::train
 #' @return A list of
 #' * soma_list: The ordered list of the SOMAmers used.
 #' * metrics: A list of train/validation/test metrics. First level is the metric,
@@ -69,6 +74,7 @@ exploreNAnalytes <- function(
     n_splits = 10,
     n_points = 20,
     plot_title = "Errors vs. model complexity",
+    trControl = caret::trainControl(method="none"),
     ...) {
 
   ## needed libraries
@@ -96,15 +102,16 @@ exploreNAnalytes <- function(
   }
   #
   if (is.null(plot_title)) plot_title <- ""
-  # # expand ... to add trainControl(method="none") to arguments passed to caret's train
-  # args <- list(...)
-  # if (!is.null(args$trControl)) {
-  #   # unfortunately, there is no other way to know that an existing "method" is not put there
-  #   # by default trainControl(), other than asking for a flag
-  #   if (is.null(args$trControl$forceMethod) || !args$trControl$forceMethod) args$trControl$method <- "none"
-  # } else {
-  #   args$trControl <- list(method="none")
-  # }
+  # expand ... to add trainControl(method="none") to arguments passed to caret's train
+    # unfortunately, there is no other way to know that an existing "method" is not put there
+    # by default trainControl(), other than asking for a flag
+  if (is.null(trControl)) {
+    trControl <- caret::trainControl(method="none")
+  } else if (
+      is.null(trControl$forceMethod) ||
+      !trControl$forceMethod) {
+    trControl$method <- "none"
+  }  # else, keep whatever value was passed
 
   ## compute preprocess for all data
   snames <- getAptamers(adat)
@@ -190,7 +197,7 @@ exploreNAnalytes <- function(
         caret::train(x = ads$train[,somamers[1:j_pts[[j]]], drop=FALSE],
                      y = ads$train[[response]],
                      method = method,
-                     trControl=trainControl(method = "none"),
+                     trControl=trControl,
                      ...)
       # test on all sets: train, validation, test (if any)
       if (continuous) {
