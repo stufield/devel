@@ -156,7 +156,7 @@ exploreNAnalytes <- function(
       adat    <- adat[-test_ix, c(somamers, response)]
     } else if ("soma.adat" %in% class(test_set)) {
       if ("log10" %in% preprocess) {
-        test_sn <- getAptamers(test_sn)
+        test_sn <- getAptamers(test_set)
         test_set[,test_sn] <- log10(test_set[,test_sn])
       }
       ads$test  <- predict(ad_prePro, test_set)[ , c(somamers, response)]
