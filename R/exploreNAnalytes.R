@@ -2,13 +2,13 @@
 #'
 #' Trains models on the data with increasing number of analytes, tests error metrics
 #'
-#' @param adat The data to use for training/validation (and possible test).
+#' @param adat The data to use for training/verification (and possible test).
 #'   By default, splits in 80/20, \code{n_splits} times.
 #' @param method The (\code{caret}) method name for the model (lm, logistic...)
 #' @param response A string with the variable name (in \code{adat}) giving the response
 #'   \code{adat[[response]]} should be a binary factor (discrete response) or numeric (continuous response)
 #'   If a factor, the first level will be considered the case, the second the control.
-#' @param preprocess Vector of preprocessing steps. Default c("log10", "center", "scale")
+#' @param preprocess Vector of preprocessing steps for covariates. Default c("log10", "center", "scale")
 #' @param order Indicates how to order the analytes as they are added to the model
 #'   If NULL, the order in \code{somamers} is used.
 #'   The default ("response"), is KS-distance for binary responses and
@@ -24,7 +24,7 @@
 #'   If NULL, all the SOMAmers in \code{adat}, in the order they are returned by getAptamers.
 #'   If a character vector, the ordered list of names to be used
 #' @param test_set Either an adat with data for an independent test
-#'   (to be plotted in addition to the train/val), or
+#'   (to be plotted in addition to the train/ver), or
 #'   a string \code{"holdout"} indicating to set aside 20% of adat for testing (default), or
 #'   NULL to avoid testing altogether
 #' @param n_splits The number of 80/20 splits to use
@@ -39,13 +39,17 @@
 #' @param ... additional options to pass on to caret::train
 #' @return A list of
 #' * soma_list: The ordered list of the SOMAmers used.
-#' * metrics: A list of train/validation/test metrics. First level is the metric,
-#'    the second one the data set (train, val, test) and each of these is a matrix
+#' * metrics: A list of train/verification/test metrics. First level is the metric,
+#'    the second one the data set (train, ver, test) and each of these is a matrix
 #'    (with n_split rows and N-1 (N: max # analytes) columns (starts at 2 analytes))
 #' * median_metrics: Medians of \code{metrics} over the \code{n_splits}
-#'    (list of metrics, each a matrix with N-1 rows and 2 or 3 columns (train, val, possibly test)
+#'    (list of metrics, each a matrix with N-1 rows and 2 or 3 columns (train, ver, possibly test)
 #' * all_plot: a ggplot of the error metrics as function of the number of analytes, for all the 80/20 splits
 #' * median_plot: a ggplot of the median of the error metrics, across the 80/20 splits
+#' NOTE: the column names in metrics and median_metrics are the initial number of analytes used. If the method
+#'   used selected some of the variables (like glmnet does) the actual number of analytes used is plotted. To
+#'   get these values, you can get the $data from the returned ggplot objects
+#'
 #' @examples
 #' # Look at the Lean Body Mass lm models, using the 'top' SOMAmers up to 1000:
 #' exp_lbm1000 <- exploreNAnalytes(fen_data,
@@ -66,16 +70,16 @@
 #' @export exploreNAnalytes
 #'
 exploreNAnalytes <- function(
-    adat, method, response,
-    preprocess = c("log10", "center", "scale"),
-    order = "response",
-    somamers = 200,
-    test_set = "holdout",
-    n_splits = 10,
-    n_points = 20,
-    plot_title = "Errors vs. model complexity",
-    trControl = caret::trainControl(method="none"),
-    ...) {
+  adat, method, response,
+  preprocess = c("log10", "center", "scale"),
+  order = "response",
+  somamers = 200,
+  test_set = "holdout",
+  n_splits = 10,
+  n_points = 20,
+  plot_title = "Errors vs. model complexity",
+  trControl = caret::trainControl(method="none"),
+  ...) {
 
   ## needed libraries
   library(caret)
@@ -103,25 +107,18 @@ exploreNAnalytes <- function(
   #
   if (is.null(plot_title)) plot_title <- ""
   # expand ... to add trainControl(method="none") to arguments passed to caret's train
-    # unfortunately, there is no other way to know that an existing "method" is not put there
-    # by default trainControl(), other than asking for a flag
+  # unfortunately, there is no other way to know that an existing "method" is not put there
+  # by default trainControl(), other than asking for a flag
   if (is.null(trControl)) {
     trControl <- caret::trainControl(method="none")
   } else if (
-      is.null(trControl$forceMethod) ||
-      !trControl$forceMethod) {
+    is.null(trControl$forceMethod) ||
+    !trControl$forceMethod) {
     trControl$method <- "none"
   }  # else, keep whatever value was passed
 
-  ## compute preprocess for all data
-  snames <- getAptamers(adat)
-  if ("log10" %in% preprocess) {
-    adat <- log10(adat)
-  }
-  ad_prePro <- caret::preProcess(adat[,snames], method=setdiff(preprocess, "log10"))
-  adat <- predict(ad_prePro, adat)
-
   ## restrict SOMAmers in adat, if needed
+  snames <- getAptamers(adat)
   # get the list, first
   if (is.null(somamers)) {
     somamers <- snames
@@ -136,14 +133,6 @@ exploreNAnalytes <- function(
       stop("The elements of somamers should all be names in adat")
     }
   }
-  # reorder, if necessary
-  if (!is.null(order)) {
-    if (class(order) == "character") {
-      somamers <- order_somamers(somamers, adat, response, method = order)
-    } else if ("function" %in% class(order)) {
-      somamers <- order(somamers, adat, response)
-    }
-  }
   # now restrict
   adat <- adat[,c(somamers, response)]
 
@@ -152,23 +141,44 @@ exploreNAnalytes <- function(
   if (!is.null(test_set)) {
     if (is.character(test_set) && test_set=="holdout") {
       test_ix <- caret::createDataPartition(adat[[response]], p=0.2)[[1]]
-      ads$test <- adat[test_ix, c(somamers, response)]
-      adat    <- adat[-test_ix, c(somamers, response)]
+      ads$test <- adat[test_ix, ]
+      adat    <- adat[-test_ix, ]
     } else if ("soma.adat" %in% class(test_set)) {
-      if ("log10" %in% preprocess) {
-        test_sn <- getAptamers(test_set)
-        test_set[,test_sn] <- log10(test_set[,test_sn])
-      }
-      ads$test  <- predict(ad_prePro, test_set)[ , c(somamers, response)]
+      ads$test <- test_set[ , c(somamers, response)]
+    }
+  }
+
+  ## compute preprocess for all data
+  if ("log10" %in% preprocess) {
+    adat <- log10(adat)
+    ads$test <- log10(ads$test)
+  }
+  ad_prePro <- caret::preProcess(adat[,somamers], method=setdiff(preprocess, "log10"))
+  adat <- predict(ad_prePro, adat)
+  ads$test  <- predict(ad_prePro, ads$test)
+
+  # reorder, if necessary
+  if (!is.null(order)) {
+    if (class(order) == "character") {
+      somamers <- order_somamers(somamers, adat, response, method = order)
+    } else if ("function" %in% class(order)) {
+      somamers <- order(somamers, adat, response)
     }
   }
 
   ## create the 80/20 splits
   train_ix <- caret::createDataPartition(adat[[response]], p = 0.8, times = n_splits)
 
+  ## if the method selects variables, we want to count only non-zero coefficients
+  ## (add more methods here, as we see fit)
+  if (method %in% c("glmnet")) {
+    model_selects_variables <- TRUE
+    n_nonzero_coeffs <- rep(NA, n_points*n_splits)
+  }
+
   ## train for n_points SOMAmers, equally spaced from j=2 to N, then compute errors
   j_pts <- unique(floor(seq(2, N, length.out = n_points)))
-  ads$train <- ads$val <- NA
+  ads$train <- ads$ver <- NA
   # set up error lists according to response
   cont_errs <- c("MAE", "RMSE")
   disc_errs <- c("Sensitivity", "Specificity", "AUC", "BalancedAccuracy", "probMAE")
@@ -188,9 +198,9 @@ exploreNAnalytes <- function(
 
   pb <- txtProgressBar(style=3)
   for (i in 1:n_splits) {
-    # set up train, val (test) sets ?
+    # set up train, ver (test) sets ?
     ads$train <- adat[train_ix[[i]], ]
-    ads$val  <- adat[-train_ix[[i]], ]
+    ads$ver  <- adat[-train_ix[[i]], ]
     for (j in seq(j_pts)) {
       # train (start from 2 analytes)
       fit <-
@@ -199,7 +209,15 @@ exploreNAnalytes <- function(
                      method = method,
                      trControl=trControl,
                      ...)
-      # test on all sets: train, validation, test (if any)
+      ## if the method selects variables, we want to count only non-zero coefficients
+      if (model_selects_variables) {
+        n_nonzero_coeffs[(j-1) * n_splits + i] <-
+          switch(method,
+                 "glmnet" = sum(coef(fit$finalModel, s=fit$finalModel$lambdaOpt)[-1]!=0)
+          )
+      }
+
+      # test on all sets: train, verification, test (if any)
       if (continuous) {
         preds <- lapply(ads, function(ad) predict(fit, ad))
       } else {
@@ -219,12 +237,13 @@ exploreNAnalytes <- function(
                    "Sensitivity" = pROC::coords(rocs[[adn]], x=cutoff)["sensitivity"],
                    "Specificity" = pROC::coords(rocs[[adn]], x=cutoff)["specificity"],
                    "BalancedAccuracy" = (pROC::coords(rocs[[adn]], x=cutoff)["sensitivity"] +
-                                         pROC::coords(rocs[[adn]], x=cutoff)["specificity"])/2,
+                                           pROC::coords(rocs[[adn]], x=cutoff)["specificity"])/2,
                    "probMAE" = mean(abs(
                      (as.numeric(ads[[adn]][[response]]) %% 2) - preds[[adn]][,1]))
-                   )
+            )
         }
       }
+
       setTxtProgressBar(pb, ((i-1) * length(j_pts) + j) / (length(j_pts) * n_splits))
     }
   }
@@ -234,10 +253,16 @@ exploreNAnalytes <- function(
 
   ## produce plots
   # all splits together
-  tmp <- melt(errs) %>% set_names(c("n_split", "n_analytes", "value", "data", "metric"))
-  tmp$data <- factor(tmp$data, levels=union(c("train", "val"), unique(tmp$data)))
+  dfp <- melt(errs) %>% set_names(c("n_split", "n_analytes", "value", "data", "metric"))
+  # save the initial values of analytes used
+  dfp$n_start_analytes <- dfp$n_analytes
+  # if the method selects variables, we want to count only non-zero coefficients
+  # (ie: how many actually used)
+  if (model_selects_variables) dfp$n_analytes <- n_nonzero_coeffs
+  #
+  dfp$data <- factor(dfp$data, levels=union(c("train", "ver"), unique(dfp$data)))
   all_splits_plot <-
-    ggplot(tmp, aes(x=n_analytes, y=value, color=data, group=paste(n_split,data,sep = "_"))) +
+    ggplot(dfp, aes(x=n_analytes, y=value, color=data, group=paste(n_split,data,sep = "_"))) +
     facet_wrap(~metric, ncol = 3, scales = "free_y") +
     geom_point(alpha = 0.6) +
     stat_smooth(geom = 'line', size = 1, alpha = 0.3, se = FALSE) +
@@ -245,13 +270,13 @@ exploreNAnalytes <- function(
           title = plot_title,
           subtitle = sprintf("model: %s, response: %s", method, response))
   # median values only
-  med_tmp <- melt(med_errs) %>% set_names(c("n_analytes", "data", "value", "metric"))
-  med_tmp$data <- factor(med_tmp$data, levels=union(c("train", "val"), unique(med_tmp$data)))
+  median_dfp <- dfp %>% group_by_at(vars(n_start_analytes, data, metric)) %>%
+    summarise_at(vars(-c(n_start_analytes, data, metric, n_split)), funs(median(., na.rm=TRUE)))
   medians_plot <-
-    ggplot(med_tmp, aes(x=n_analytes, y=value, color=data)) +
+    ggplot(median_dfp, aes(x=n_analytes, y=value, color=data)) +
     facet_wrap(~metric, ncol = 3, scales = "free_y") +
     geom_point(alpha = 0.6) +
-    geom_smooth() +
+    geom_smooth(se = FALSE) +
     labs (x= "Number of analytes", y = "error",
           title = plot_title,
           subtitle = sprintf("model: %s, response: %s", method, response))
@@ -259,8 +284,8 @@ exploreNAnalytes <- function(
   ## return data and plots
   invisible(
     list(soma_list = somamers,
-       metrics = errs, median_metrics = med_errs,
-       all_plot = all_splits_plot, median_plot = medians_plot)
+         metrics = errs, median_metrics = med_errs,
+         all_plot = all_splits_plot, median_plot = medians_plot)
   )
 
 }
@@ -285,17 +310,17 @@ order_somamers <- function(soma_list, adat, response, method="response") {
     tmp_l <- split(adat, adat[[response]])
     tmp_D <-
       switch(method,
-           "response" = ,
-           "KS" =
-              sapply(soma_list, function(sn) as.numeric(ks.test(tmp_l[[1]][,sn],
-                                                               tmp_l[[2]][,sn])$statistic)),
-           "t.test" =
-             abs(
-               sapply(soma_list, function(sn) as.numeric(t.test(tmp_l[[1]][,sn],
-                                                                tmp_l[[2]][,sn])$statistic))
-             ),
-           stop(sprintf("binary response requires KS or t.test ordering, cannot use %s", method))
-    )
+             "response" = ,
+             "KS" =
+               sapply(soma_list, function(sn) as.numeric(ks.test(tmp_l[[1]][,sn],
+                                                                 tmp_l[[2]][,sn])$statistic)),
+             "t.test" =
+               abs(
+                 sapply(soma_list, function(sn) as.numeric(t.test(tmp_l[[1]][,sn],
+                                                                  tmp_l[[2]][,sn])$statistic))
+               ),
+             stop(sprintf("binary response requires KS or t.test ordering, cannot use %s", method))
+      )
   } else if (is.numeric(adat[[response]])) {
     # use correlation
     tmp_D <-
@@ -307,7 +332,7 @@ order_somamers <- function(soma_list, adat, response, method="response") {
                sapply(soma_list, function(sn) cor(adat[,sn], adat[[response]], method = "spearman")),
              stop(sprintf("continuous response requires pearson or spearman ordering, cannot use %s", method))
       )
-   } else {
+  } else {
     # bail out
     stop(sprintf("The response should be a binary factor or continuous, not %s.",
                  class(adat[[response]])))
