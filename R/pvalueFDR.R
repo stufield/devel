@@ -47,7 +47,6 @@
 #'
 #' p4 <- c(runif(200), runif(25, 0.01, 0.1))
 #' pvalueFDR(p4, plot = TRUE)
-#' @importFrom magrittr "%>%"
 #' @importFrom graphics abline grid legend
 #' @importFrom rlang signal
 #' @export pvalueFDR

@@ -11,6 +11,7 @@
 #' @seealso \code{\link{ls}}
 #' @examples
 #' lss()
+#' @importFrom purrr set_names
 #' @export
 lss <- function() {
 
@@ -45,7 +46,7 @@ lss <- function() {
     obj_names <- c("pkg.funs", "funcbox", "global.funs", "list",
                    "adat", "data.frame", "matrix", "table", "vector")
     sum.objs <- list(pkg.funs, funcbox, funs, L, adats, df, mat, tab, v) %>%
-      magrittr::set_names(obj_names)
+      purrr::set_names(obj_names)
     writeLines("*  Summary:")
     print(sapply(sum.objs, length))
     sum.objs[-1]

@@ -26,7 +26,7 @@ lsObjects <- function(env = .GlobalEnv, units = "MB") {
                               "B", "KB", "MB", "GB"))
   #denom <- switch(units, KB = 1024, MB = 1024^2, GB = 1024^3, 1)
   denom <- switch(units, KB = 1000, MB = 1000^2, GB = 1000^3, 1)
-  key   <- list("size") %>% magrittr::set_names(units)
+  key   <- list("size") %>% purrr::set_names(units)
   obj   <- ls(env)
   obj_list <- list()
   obj_list$object <- obj

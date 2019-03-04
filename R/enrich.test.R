@@ -29,6 +29,7 @@
 #' enrich_test(en_list)
 #' @importFrom stats fisher.test
 #' @importFrom cli rule
+#' @importFrom purrr set_names
 #' @importFrom rlang signal
 #' @importFrom crayon blue
 #' @export enrich_test
@@ -67,7 +68,7 @@ enrich_test <- function(x, alternative = c("two.sided", "enrich", "deplete")) {
   two_sided_double_mid <- one_sided_mid * 2  # double the one sided p-value
   # ------------------------------------- #
   prob_vec2 <- stats::dhyper(0:n.1, n1., n2., n.1) %>%
-    magrittr::set_names(as.character(0:n.1))
+    purrr::set_names(as.character(0:n.1))
   prob_vec2         <- prob_vec2[which(prob_vec2 <= prob_vec2[as.character(n11)])]
   two_sided_min_lik <- sum(prob_vec2)
   prob_vec2[as.character(n11)] <- prob_vec2[as.character(n11)] / 2

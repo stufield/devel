@@ -26,7 +26,7 @@ that, if deemed sufficiently useful, will eventually be migrated into an
 appropriate member of the `somaverse`.
 
 
-----------------------------
+----------------
 
 ## Installation
 
@@ -65,7 +65,7 @@ Please note that this SomaLogic, Inc. internal package is released with
 a [LICENSE](LICENSE). By using in this package you agree to abide by its terms.
 
 
--------------------------
+----------
 
 
 Created on `r Sys.Date()` by [Rmarkdown](https://github.com/rstudio/rmarkdown)

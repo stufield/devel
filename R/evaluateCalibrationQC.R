@@ -33,7 +33,7 @@
 #' evaluateCalibrationQC(calibrated.data)
 #' }
 #' @importFrom purrr map map_df set_names
-#' @importFrom magrittr set_rownames "%<>%" "%>%"
+#' @importFrom magrittr set_rownames
 #' @importFrom rlang signal
 #' @export evaluateCalibrationQC
 evaluateCalibrationQC <- function(cal.data, QCref = NULL) {

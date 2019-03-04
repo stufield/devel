@@ -71,6 +71,7 @@ choose_init <- function(y, k = 2) {
 #' @examples
 #' x <- c(rnorm(50,mean=10),rnorm(50,mean=25))
 #' @export normal_k2_mixture
+#' @importFrom purrr map set_names
 normal_k2_mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
                                                 start.sd = c(NULL, NULL),
                                                 start.pi = NULL),
@@ -92,7 +93,7 @@ normal_k2_mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
        NULL
      }
     }) %>%
-    magrittr::set_names(good_names)
+    purrr::set_names(good_names)
 
   if ( any(sapply(pars, is.null)) ) {
     tmp.pars <- choose_init(y = data)

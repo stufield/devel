@@ -17,9 +17,9 @@
 #' getDupIdxList(LETTERS)      # no duplicates (empty list)
 #' getDupIdxList(c(1, 1:10))   # 1 duplicate
 #' @seealso \code{\link{duplicatedIndex}}
-#' @importFrom magrittr "%>%"
+#' @importFrom purrr set_names
 #' @export getDupIdxList
 getDupIdxList <- function(x) {
   duplicatedIndex(x) %>% x[.] %>% unique() %>% {
-    purrr::map(., function(id) which(x == id)) %>% magrittr::set_names(.)}
+    purrr::map(., function(id) which(x == id)) %>% purrr::set_names(.)}
 }

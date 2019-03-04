@@ -72,7 +72,7 @@ rlm_calibration <- function(data1, data2, apts = NULL, data1.id,
                  beta1 = betavec[2],
                  converged = model$converged)
     }) %>% 
-    magrittr::set_names(apts)
+    purrr::set_names(apts)
 
   stats   <- do.call("rbind", stats)
   no.conv <- rownames(stats)[!stats$converged]
@@ -167,7 +167,6 @@ data.catch <- function(d1, d2, ...) {
 #' @author Stu Field
 #' @seealso \code{\link[MASS]{rlm}}
 #' @importFrom MASS rlm
-#' @importFrom magrittr "%<>%"
 #' @noRd
 fit.rlm <- function(x, y, do.log) {
   if ( do.log ) {

@@ -17,7 +17,6 @@
 #' @seealso \code{\link{medianNormalize}}, \code{\link{getAptamerDilution}}
 #' @examples
 #' denormalizeAdat(sample.adat)
-#' @importFrom magrittr "%>%" "%<>%"
 #' @importFrom rlang signal
 #' @importFrom stringr str_remove_all
 #' @importFrom SomaReadr cleanNames
