@@ -26,7 +26,7 @@ that, if deemed sufficiently useful, will eventually be migrated into an
 appropriate member of the `somaverse`.
 
 
-----------------------------
+----------------
 
 ## Installation
 
@@ -51,6 +51,7 @@ Alternatively, you may call the driver function directly from `SomaObjects`:
 
 # Direct Call
 # Note: all objects, even non-exported, are accessible
+options(width = 110)
 SomaObjects::sp()
 ls("package:devel")
 ```
@@ -64,7 +65,7 @@ Please note that this SomaLogic, Inc. internal package is released with
 a [LICENSE](LICENSE). By using in this package you agree to abide by its terms.
 
 
--------------------------
+----------
 
 
 Created on `r Sys.Date()` by [Rmarkdown](https://github.com/rstudio/rmarkdown)

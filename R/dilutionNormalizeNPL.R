@@ -136,7 +136,6 @@ getInit <- function(data, npar = 4) {
 #' }
 #' @importFrom stats optim
 #' @importFrom purrr list_modify
-#' @importFrom magrittr "%<>%" "%>%"
 #' @export fit.npl
 fit.npl <- function(data, npar = 4, do.log = TRUE, ...) {
 

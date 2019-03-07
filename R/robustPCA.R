@@ -23,7 +23,6 @@
 #'
 #' # Run until tolerance is reached & plot
 #' pca2 <- robustPCA(data, max.iter = 1000, verbose = TRUE)
-#' @importFrom magrittr "%<>%"
 #' @importFrom stringr str_glue
 #' @export robustPCA
 robustPCA <- function(x, tolerance = 1e-07, max.iter = 250,

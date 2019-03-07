@@ -8,6 +8,7 @@
 #' @author Stu Field
 #' @examples
 #' createConcordTable(dat)
+#' @importFrom purrr set_names
 #' @export createConcordTable
 createConcordTable <- function(dat) {
   iter <- dat$SampleId %>% unique() %>% sort()
@@ -27,5 +28,5 @@ createConcordTable <- function(dat) {
                 tmp_df$rho.c %<>% round(3)
                 tmp_df[ c(1, nrow(tmp_df)), c("rho.c","ci95","p.value")]
    }) %>%
-   magrittr::set_names(iter)
+   purrr::set_names(iter)
 }

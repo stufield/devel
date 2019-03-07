@@ -16,6 +16,7 @@
 #' \dontrun{
 #' createNormalizationSummaryTable(dat)
 #' }
+#' @importFrom purrr set_names
 #' @export createNormalizationSummaryTable
 createNormalizationSummaryTable <- function(dat) {
 
@@ -28,7 +29,7 @@ createNormalizationSummaryTable <- function(dat) {
   hybnorms <- lapply(spldata, function(.x) {
                        hyb <- range(.x$HybControlNormScale)
                        hyb <- sprintf("(%0.2f, %0.2f)", hyb[1], hyb[2])
-                       data.frame(a = hyb) %>% magrittr::set_names("Hyb SF")
+                       data.frame(a = hyb) %>% purrr::set_names("Hyb SF")
     }) %>% do.call(rbind, .)
 
   if ( "PlateScale_Scalar" %in% names(dat) ) {
@@ -39,7 +40,7 @@ createNormalizationSummaryTable <- function(dat) {
   mednorms <- lapply(spldata, function(.x) {
                        med <- range(.x[, getNormNames(.x)])
                        med <- sprintf("(%0.2f, %0.2f)", med[1], med[2])
-                       data.frame(b = med) %>% magrittr::set_names("Med SF")
+                       data.frame(b = med) %>% purrr::set_names("Med SF")
     }) %>% do.call(rbind, .)
 
   sop        <- calibrationSOP(dat, do.plot = FALSE, verbose = FALSE)$cal.table

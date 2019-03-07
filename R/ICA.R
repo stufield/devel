@@ -36,7 +36,6 @@
 #' @examples
 #' ica <- ICA(sample.adat, n.comp = 5)
 #' @importFrom fastICA fastICA
-#' @importFrom magrittr "%<>%" "%>%"
 #' @export ICA
 ICA <- function(data, n.comp, ...) {
   if ( SomaReadr::is.soma.adat(data) ) {

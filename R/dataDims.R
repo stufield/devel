@@ -14,7 +14,7 @@
 #' names(tmp) <- head(letters, 5)
 #' data_dims(tmp)
 #' @importFrom rlang signal
-#' @importFrom purrr compact
+#' @importFrom purrr compact set_names
 #' @export data_dims
 data_dims <- function(x) {
   if ( is.null(names(x)) ) {
@@ -24,7 +24,7 @@ data_dims <- function(x) {
     purrr::compact()
   do.call(rbind, dim_list) %>%
     data.frame() %>%
-    magrittr::set_names(c("rows", "columns")) %>%
+    purrr::set_names(c("rows", "columns")) %>%
     dplyr::mutate(meta = sapply(x, getMeta, n = TRUE),
                   apts = sapply(x, getAptamers, n = TRUE))
 }
