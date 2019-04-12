@@ -1,4 +1,4 @@
-source("singleSampleANML.R")
+
 #' Create a reference from un-median normalized (but calibrated) data
 #' using single-sample adaptive maximum likelihood normalization (ssANML)
 #' We start with an initiaReference and an adat (in particular, we use
@@ -6,11 +6,11 @@ source("singleSampleANML.R")
 #' on all the samples and rebuild references from them. Rinse, repeat until SFs don't change
 #'
 #' @param adat the data to use for reference building
-#' @param initialRef a reference to kick-start the process. 
+#' @param initialRef a reference to kick-start the process.
 #' If NULL (default), use all of the adat samples
 #' @param cutoff the limit to use in the call to ssANML (default: 2), to decide which analytes get dropped
 #' @return a reference object (see generateRefParams below) of the final normalized data
-generateSingleSampleReference <- function(adat, initialRef=NULL, 
+generateSingleSampleReference <- function(adat, initialRef=NULL,
                                           effect_cut=2, recenter = FALSE,
                                           maxrelerr=1e-2, maxiter=20) {
 
@@ -41,21 +41,21 @@ generateSingleSampleReference <- function(adat, initialRef=NULL,
       # # alternative rescaling
       # sf <- median(initialRef$RefMedian)/median(as.matrix(new_adat[[niter]][,snames]))
       # new_adat[[niter]][,c(getNormNames(new_adat[[niter]]),snames)] %>% multiply_by(sf)
-    }    
-    new_ref[[niter]]  <- computeRefParams_kCentral(new_adat[[niter]], 
-                                                   baseref = initialRef, 
+    }
+    new_ref[[niter]]  <- computeRefParams_kCentral(new_adat[[niter]],
+                                                   baseref = initialRef,
                                                    effect_cut = effect_cut)
     # update
-    relerr_median <- max((new_ref[[niter]]$RefLog10Median - 
+    relerr_median <- max((new_ref[[niter]]$RefLog10Median -
                           initialRef$RefLog10Median) / initialRef$RefLog10Median)
-    relerr_mad    <- max((new_ref[[niter]]$RefLog10MAD - 
+    relerr_mad    <- max((new_ref[[niter]]$RefLog10MAD -
                           initialRef$RefLog10MAD) / initialRef$RefLog10MAD)
     relerr <- max(relerr_median, relerr_mad)
     initialRef <- new_ref[[niter]]
-    adat  <- new_adat[[niter]] 
+    adat  <- new_adat[[niter]]
     niter <- niter + 1
     # report progress
-    cat(sprintf("%03d: relerr_median = %5.3f, relerr_mad = %5.3f, relerr = %5.3f\n", 
+    cat(sprintf("%03d: relerr_median = %5.3f, relerr_mad = %5.3f, relerr = %5.3f\n",
                 niter-1, relerr_median, relerr_mad, relerr))
     cat(apply(adat[,getNormNames(adat)],2,range)[1,], "\n")
     cat(apply(adat[,getNormNames(adat)],2,range)[2,], "\n")
