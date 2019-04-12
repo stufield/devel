@@ -4,7 +4,7 @@
 #' Add a CDF of the estimated assay variance via the Covance QC samples.
 #'
 #' @param apt Character. Which SOMAmer (or SeqId) to add. This queries the
-#' \code{\link[SomaObjects]{mLod}} object to obtain the median absolute deviation
+#' \code{\link[SomaPlyr]{mLod}} object to obtain the median absolute deviation
 #' (MAD) for that aptamer. Ignored if `mad` is passed directly.
 #' @param apt.median Numeric. The median value for the empirical values
 #' to be plotted against. This is used to create a random normal of the
@@ -14,7 +14,7 @@
 #' only Serum and Plasma.
 #' @param ... Additonal arguments passed to \code{\link[SomaGlobals]{plotCDF}}
 #' @author Stu Field
-#' @seealso \code{\link[SomaPlyr]{matchSeqIds}}, \code{\link[SomaObjects]{mLod}},
+#' @seealso \code{\link[SomaPlyr]{matchSeqIds}}, \code{\link[SomaPlyr]{mLod}},
 #' \code{\link[stats]{rnorm}}, \code{\link[SomaGlobals]{plotCDF}}
 #' @examples
 #'
