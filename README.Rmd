@@ -68,5 +68,5 @@ a [LICENSE](LICENSE). By using in this package you agree to abide by its terms.
 ----------
 
 
-Created on `r Sys.Date()` by [Rmarkdown](https://github.com/rstudio/rmarkdown)
+Created by [Rmarkdown](https://github.com/rstudio/rmarkdown)
 (v`r utils::packageVersion("rmarkdown")`) and `r R.version$version.string`. 

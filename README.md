@@ -36,36 +36,40 @@ Alternatively, you may call the driver function directly from
 # Note: all objects, even non-exported, are accessible
 options(width = 110)
 SomaObjects::sp()
-#> ══ SomaR Dev Environment Loaded ══════════════════════════════════════════════════════════════════
+#> ══ somaverse dev environment ═════════════════════════════════════════════════ Loaded ══
 ls("package:devel")
 #>  [1] "addAssayVariance"                "calc.aic"                        "calc.dil.scale.factors"         
 #>  [4] "calc.limits"                     "calc.mapped.scale.factors"       "calc.npl.ci"                    
 #>  [7] "calcConnectedComponents"         "calcCVbands"                     "calcCVbyGroup"                  
 #> [10] "calcICC"                         "calcPairwiseTables"              "calcPercentileTable"            
 #> [13] "calcRsquared"                    "calcSS2L"                        "choose_init"                    
-#> [16] "clusterCorHeatmaps"              "computeCVBands"                  "createConcordTable"             
-#> [19] "createNormalizationSummaryTable" "createTestsList"                 "data_dims"                      
-#> [22] "data.catch"                      "denormalizeAdat"                 "dilutionNormalize"              
-#> [25] "duplicatedIndex"                 "em_1_step"                       "enrich_test"                    
-#> [28] "equal.likelihood.pt"             "erf"                             "erf.inv"                        
-#> [31] "erfc"                            "evaluateCalibrationQC"           "exploreNAnalytes"               
-#> [34] "finder"                          "fit.npl"                         "fit.rlm"                        
-#> [37] "get_pars"                        "get_tom_data"                    "get.4PLtheta.file"              
-#> [40] "get.npl.stats"                   "getDupIdxList"                   "getInflectionPt"                
-#> [43] "getInit"                         "getInput"                        "getRFUdata"                     
-#> [46] "getSSmenu"                       "gg_color_hue"                    "gof"                            
-#> [49] "ICA"                             "lsObjects"                       "lss"                            
-#> [52] "modifyAptContent"                "my_x_log10"                      "my_y_log10"                     
-#> [55] "my.hyb.plot"                     "my.qq"                           "normal_k2_mixture"              
-#> [58] "order_somamers"                  "permute"                         "plot.heatmap.clusters"          
-#> [61] "plot.mix_k2"                     "plot.npl"                        "plot.scramble.ks"               
-#> [64] "plotHemo"                        "plotTwoWayInteraction"           "print.npl"                      
-#> [67] "pvalueFDR"                       "quantileNormalize"               "rlm_calibration"                
-#> [70] "rm_grep"                         "robustPCA"                       "robustPCAshrinkage"             
-#> [73] "robustPCAsvdThresh"              "scrambleClasses"                 "scrambleKS"                     
-#> [76] "searchBreadthFirst"              "seriateHeatmap"                  "sign_test"                      
-#> [79] "sl"                              "Sys.sourceDir"                   "system.file"                    
-#> [82] "test.triples.x"                  "triples_test"
+#> [16] "computeCVBands"                  "computeRefParams"                "computeRefParams_kCentral"      
+#> [19] "createConcordTable"              "createNormalizationSummaryTable" "createTestsList"                
+#> [22] "data_dims"                       "data.catch"                      "decalibrate"                    
+#> [25] "dehybNormalize"                  "demedianNormalize"               "denormalizationWrapper"         
+#> [28] "denormalizeAdat"                 "deplateNormalize"                "dilutionNormalize"              
+#> [31] "duplicatedIndex"                 "em_1_step"                       "enrich_test"                    
+#> [34] "equal.likelihood.pt"             "erf"                             "erf.inv"                        
+#> [37] "erfc"                            "evaluateCalibrationQC"           "exploreNAnalytes"               
+#> [40] "finder"                          "fit.npl"                         "fit.rlm"                        
+#> [43] "generateSingleSampleReference"   "get_pars"                        "get_tom_data"                   
+#> [46] "get.4PLtheta.file"               "get.npl.stats"                   "getDupIdxList"                  
+#> [49] "getInflectionPt"                 "getInit"                         "getInput"                       
+#> [52] "getPlateScale_Scalar"            "getRFUdata"                      "getSSmenu"                      
+#> [55] "gg_color_hue"                    "gof"                             "ICA"                            
+#> [58] "kCentralMAD"                     "kCentralSD"                      "lsObjects"                      
+#> [61] "lss"                             "mergeMetaData"                   "modifyAptContent"               
+#> [64] "my_x_log10"                      "my_y_log10"                      "my.hyb.plot"                    
+#> [67] "my.qq"                           "normal_k2_mixture"               "order_somamers"                 
+#> [70] "permute"                         "plot.mix_k2"                     "plot.npl"                       
+#> [73] "plot.scramble.ks"                "plotHemo"                        "plotTwoWayInteraction"          
+#> [76] "print.npl"                       "pvalueFDR"                       "quantileNormalize"              
+#> [79] "removePlateScale_Scalar"         "rlm_calibration"                 "rm_grep"                        
+#> [82] "robustPCA"                       "robustPCAshrinkage"              "robustPCAsvdThresh"             
+#> [85] "scrambleClasses"                 "scrambleKS"                      "searchBreadthFirst"             
+#> [88] "seriateHeatmap"                  "sign_test"                       "sl"                             
+#> [91] "Sys.sourceDir"                   "system.file"                     "test.triples.x"                 
+#> [94] "triples_test"
 ```
 
 -----
@@ -78,6 +82,5 @@ terms.
 
 -----
 
-Created on 2019-03-01 by
-[Rmarkdown](https://github.com/rstudio/rmarkdown) (v1.11) and R version
-3.5.2 (2018-12-20).
+Created by [Rmarkdown](https://github.com/rstudio/rmarkdown) (v1.11) and
+R version 3.5.2 (2018-12-20).
