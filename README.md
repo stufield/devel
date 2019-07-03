@@ -22,21 +22,21 @@ the `RStudio` **addin** feature, which behaves similar to
 `devtools::load_all()`.
 
     Addins Menu ->
-      SOMAOBJECTS ->
+      SOMALOADALL ->
         `Load Development Environment`
 
 Alternatively, you may call the driver function directly from
-`SomaObjects`:
+`SomaLoadAll`:
 
 ``` r
 # Help
-?SomaObjects::sp
+?SomaLoadAll::sp
 
 # Direct Call
 # Note: all objects, even non-exported, are accessible
 options(width = 110)
-SomaObjects::sp()
-#> ══ somaverse dev environment ═════════════════════════════════════════════════ Loaded ══
+SomaLoadAll::sp()
+#> ══ somaverse dev environment ══════════════════════════════════════════════════════════ Loaded ══
 ls("package:devel")
 #>  [1] "addAssayVariance"                "calc.aic"                        "calc.dil.scale.factors"         
 #>  [4] "calc.limits"                     "calc.mapped.scale.factors"       "calc.npl.ci"                    
