@@ -44,6 +44,8 @@ demedianNormalize <- function(adat,
   }
 
   mixes        <- getAptamerDilution(adat, drop.hyb = TRUE, ...)
+  # getAptamerDilution has a bug in some versions that does not really drop hyb...
+  mixes[["0"]] <- NULL
   names(mixes) %<>% stringr::str_remove_all("[.]0$|%|^[.]*")
   names(mixes) <- paste0("NormScale.", names(mixes))
   mixes <- mixes[ sort(names(mixes)) ]

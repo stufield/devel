@@ -4,7 +4,7 @@
 #'
 #' @param adat The data to use for training/verification (and possible test).
 #'   By default, splits in 80/20, \code{n_splits} times.
-#' @param method The (\code{caret}) method name for the model (lm, logistic...)
+#' @param method The (\code{caret}) method name for the model (lm, glm, glmnet...)
 #' @param response A string with the variable name (in \code{adat}) giving the response
 #'   \code{adat[[response]]} should be a binary factor (discrete response) or numeric (continuous response)
 #'   If a factor, the first level will be considered the case, the second the control.
@@ -32,7 +32,7 @@
 #'   to 20 (or less if maximum number of analytes is less than 20)
 #' @param plot_title an optional string with the title for the plots (defaults to "Errors vs. model complexity")
 #' @param trControl optional trainControl list to pass to caret::train.
-#'   NOTE: this function does its own partitioning of the data for training/error comuptation,
+#'   NOTE: this function does its own partitioning of the data for training/error computation,
 #'   so it uses trControl with method="none". It will override any value of method that you pass
 #'   in the trControl argument. If you really want to set trControl$method to
 #'   something other than "none", you must also pass trControl$forceMethod=TRUE
@@ -78,7 +78,7 @@ exploreNAnalytes <- function(
   n_splits = 10,
   n_points = 20,
   plot_title = "Errors vs. model complexity",
-  trControl = caret::trainControl(method="none"),
+  trControl = NULL,
   ...) {
 
   ## needed libraries
@@ -171,6 +171,7 @@ exploreNAnalytes <- function(
 
   ## if the method selects variables, we want to count only non-zero coefficients
   ## (add more methods here, as we see fit)
+  model_selects_variables <- FALSE
   if (method %in% c("glmnet")) {
     model_selects_variables <- TRUE
     n_nonzero_coeffs <- rep(NA, n_points*n_splits)
