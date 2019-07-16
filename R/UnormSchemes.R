@@ -53,7 +53,13 @@ UnormInGroups <- function(adat,
           if (length(norm_names)>0) {
             new_norm_names <- paste0(norm_names, "_", sgn)
             normed_list[[sgn]]$adats[[i]][,norm_names] %<>% ifelse(is.na(.), 1, .)
-            tmp[, new_norm_names] %<>% multiply_by(normed_list[[sgn]]$adats[[i]][,norm_names]) 
+            # ugly, but necessary ?
+            for (j in seq(new_norm_names)) {
+              nn  <- norm_names[j]
+              nnn <- new_norm_names[j]
+              wdiff <- which(tmp[, nnn] != normed_list[[sgn]]$adats[[i]][,nn])
+              tmp[wdiff, nnn] %<>% multiply_by(normed_list[[sgn]]$adats[[i]][wdiff,nn]) 
+            }
           }
         }
       }
@@ -145,6 +151,7 @@ UnormOneGroup <-   function(adat,
                           do_regexp = "QC|Sample",
                           effect_cut = cutoff,  
                           do_round  = do_round,
+                          min_FU = 0.75,
                           verbose   = verbose)
   out$anml <- tmp$MedDat
   # remove artificial nwRowOrderCols
