@@ -1,17 +1,14 @@
 
 #' Create Normalization Summary Table for Urine
 #'
-#' This function summarizes the normalization metrics
-#' into a table. It includes the plate normalization if performed
-#' and the hyb and med normalization scale factor ranges. This
-#' function is primarily used in the 3 plate reproducibility study
-#' experimental design, but could be used for any normalized ADAT.
+#' This function summarizes the unrine normalization metrics
+#' into a table. It includes the plate normalization
+#' and the hyb and med normalization scale factor ranges, for the "S2" group.
 #'
-#' @param A median normalizaed and calibrated ADAT, with multiple
+#' @param dat A 3-group normalized ADAT, with multiple
 #' plates that have been normalized into one data frame ("soma.adat").
 #' @return A summary table of the normalization results
 #' @author **Stu Field**, **Eduardo Tabacman**
-#' @seealso \code{\link[SomaNormalization]{sop.calibration}}
 #' @examples
 #' \dontrun{
 #' createUrineNormalizationSummaryTable(dat)
