@@ -20,6 +20,7 @@ dehybNormalize <- function(adat) {
                   "error")
   }
 
+  snames <- getAptamers(adat)
   adat[,snames] <- adat[, snames]/adat$HybControlNormScale
 
   # erase hybNorm ScaleFactors
