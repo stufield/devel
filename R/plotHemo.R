@@ -1,4 +1,3 @@
-
 #' Plot Hemoglobin vs Haptoglobin
 #'
 #' Makes a scatter plot of all samples for Hemoglobin vs. Haptoglobin.
@@ -14,7 +13,7 @@
 #' @seealso \code{\link[graphics]{plot}}, \code{\link[graphics]{legend}}
 #' @examples
 #' plotHemo(sample.adat, hb.hp.ratio = 0.2)
-#' @export plotHemo
+#' @export
 plotHemo <- function(adat, notes.field, grep.pattern = NULL,
                      cutoff = 30000, legend.pos = "bottomleft",
                      filename = NULL, hb.hp.ratio = 100, ...) {
@@ -44,15 +43,13 @@ plotHemo <- function(adat, notes.field, grep.pattern = NULL,
        bg = cols, log = "xy", ...)
   abline(v = cutoff, col = 1, lty = 2, lwd = 2)
 
-  if ( !is.null(grep.pattern) )
+  if ( !is.null(grep.pattern) ) {
     legend.vals <- c("\"\"", grep(grep.pattern, adat[, notes.field],
                                   ignore.case = TRUE, value = TRUE))
-  else
+  } else {
     legend.vals <- names(table(adat[[notes.field]]))
-
+  }
   addLegend(legend.vals, col = 1, pt.bg = col.string, pch = 21, legend.pos)
   bool <- if (is.numeric(cutoff)) adat$HBA1.HBB.4915.64.2>=cutoff else hb / hp >= hb.hp.ratio
-  rownames(adat)[ bool ]
-
+  invisible(rownames(adat)[bool])
 }
-

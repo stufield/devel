@@ -1,4 +1,3 @@
-
 #' Calculate Intraclass Correlation Coefficient
 #'
 #' Calculate Intraclass Correlation Coefficient (r_i).
@@ -12,9 +11,8 @@
 #' @seealso \code{\link{sapply}}, \code{\link{mean}}, \code{\link{sum}}, \code{\link{aov}}, \code{\link{qf}}
 #' @references Sokal and Rohlf, pg. 214, 2nd ed.
 #' @examples
-#'
-#' @importFrom rlang signal
-#' @export calcICC
+#' \dontrun{}
+#' @export
 calcICC <- function(x, do.log = FALSE, alpha = 0.05) {
 
   if ( inherits(x, "data.frame") ) {
@@ -34,8 +32,10 @@ calcICC <- function(x, do.log = FALSE, alpha = 0.05) {
   n_o <- (1 / (length(x) - 1)) * (sum(group_n) - (sum(group_n^2) / sum(group_n)))
 
   if ( n_o > mean(group_n) ) {
-    rlang::signal(
-      "n_o > mean sample size: check calculation & sample sizes.", "error")
+    stop(
+      "n_o > mean sample size: check calculation & sample sizes.",
+      call. = FALSE
+    )
   }
 
   ss_within <- sum(sapply(x, function(.i) sum((mean(.i) - .i)^2) ))
@@ -69,10 +69,11 @@ calcICC <- function(x, do.log = FALSE, alpha = 0.05) {
     p.value = c(1 - pf(ms_between / ms_within, df1, df2), NA, NA)
   )
 
-  list(anova           = aov_tab,
-       s2.within       = ms_within,
-       s2.between      = s2_between,
-       CI95.s2.between = ci95,
-       icc             = s2_between / (s2_between + ms_within))
-
+  list(
+    anova           = aov_tab,
+    s2.within       = ms_within,
+    s2.between      = s2_between,
+    CI95.s2.between = ci95,
+    icc             = s2_between / (s2_between + ms_within)
+  )
 }

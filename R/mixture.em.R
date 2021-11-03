@@ -1,7 +1,6 @@
-
 #' 1 Step EM
 #'
-#' A single step of the EM algorithm
+#' A single step of the EM algorithm.
 #'
 #' @noRd
 #' @param y value
@@ -25,13 +24,14 @@ em_1_step <- function(y, mu1, mu2, sd1, sd2, pi.hat) {
   LL         <- log( (1 - new.pi.hat) * dnorm(y, new.mu1, sqrt(new.var1)) +
                     new.pi.hat * (dnorm(y, new.mu2, sqrt(new.var2))) )
 
-  list(mu = c(new.mu1, new.mu2),
-       sigma = c(sqrt(new.var1), sqrt(new.var2)),
-       pi.hat = new.pi.hat,
-       loglik = sum(LL),
-       responsibilities_2 = gamma)
+  list(
+    mu = c(new.mu1, new.mu2),
+    sigma = c(sqrt(new.var1), sqrt(new.var2)),
+    pi.hat = new.pi.hat,
+    loglik = sum(LL),
+    responsibilities_2 = gamma
+  )
 }
-
 
 
 #' Choose Initial Conditions
@@ -56,7 +56,6 @@ choose_init <- function(y, k = 2) {
 }
 
 
-
 #' Title
 #'
 #' Description
@@ -70,8 +69,7 @@ choose_init <- function(y, k = 2) {
 #' @references Tibshirani and Hastie; Bible
 #' @examples
 #' x <- c(rnorm(50,mean=10),rnorm(50,mean=25))
-#' @export normal_k2_mixture
-#' @importFrom purrr map set_names
+#' @export
 normal_k2_mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
                                                 start.sd = c(NULL, NULL),
                                                 start.pi = NULL),
@@ -82,11 +80,11 @@ normal_k2_mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
   if ( any(!names(pars) %in% good_names) ) {
     message(paste("Should be:", paste(good_names, collapse = ", ")))
     message(paste("   Names are:", names(pars)))
-    rlang::signal("Check spelling of list names for `pars =` argument.",
-                  "error")
+    stop("Check spelling of list names for `pars =` argument.",
+         call. = FALSE)
   }
 
-  pars <- purrr::map(good_names, function(x) {
+  pars <- lapply(good_names, function(x) {
      if ( x %in% names(pars) ) {
        pars[[x]]
      } else {
@@ -132,9 +130,9 @@ normal_k2_mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
       pi.par    <- new.pars$pi.hat
       restarts  <- restarts + 1
       if ( restarts > max.restarts ) {
-        rlang::signal(
+        stop(
           "Too many restarts. Possible extreme outliers in distribution.",
-          "error")
+          call. = FALSE)
       }
       iter   <- 0
       loglik <- 0
@@ -143,7 +141,7 @@ normal_k2_mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
     }
   }
 
-  message(" Iteration ...", iter, "\n")
+  message("Iteration ...", iter, "\n")
 
   list(y = data,
        mu = as.numeric(mu.par),
@@ -159,8 +157,6 @@ normal_k2_mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
     addClass("mix_k2")
 }
 
-
-
 #' Plot Object
 #'
 #' S3 method for "mix_k2" objects
@@ -175,7 +171,6 @@ normal_k2_mixture <- function(data, pars = list(start.mu = c(NULL, NULL),
 #' @examples
 #' plot(x)
 #' @importFrom graphics plot par lines hist
-#' @method plot mix_k2
 #' @export
 plot.mix_k2 <- function(x, type = c("density", "likelihood", "posterior"),
                         title = NULL, ...) {
@@ -218,13 +213,12 @@ plot.mix_k2 <- function(x, type = c("density", "likelihood", "posterior"),
     axis(1, at = x$y, labels = NA, col.ticks = 3, lwd.ticks = 2, tcl = 0.5)
 
   } else {
-    rlang::signal(
-      paste("Invalid `type =` argumnet passed to `plot()`.",
-            type), "error")
+    stop(
+      "Invalid `type =` argumnet passed to `plot()`. ", type,
+      call. = FALSE
+    )
   }
-
 }
-
 
 
 #' Calculate Equal Probability
@@ -233,7 +227,6 @@ plot.mix_k2 <- function(x, type = c("density", "likelihood", "posterior"),
 #'
 #' @rdname normal_k2_mixture
 #' @return A scalar
-#' @author Kirk DeLisle
 #' @examples
 #' equal.likelihood.pt(x)
 #' @export
@@ -248,4 +241,3 @@ equal.likelihood.pt <- function(x) {
   lik[2] <- (-b - sqrt(b^2 - 4 * a * c)) / (2 * a)
   lik[which(lik > min(x$mu) && lik < max(x$mu))]
 }
-

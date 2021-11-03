@@ -1,4 +1,3 @@
-
 #' Create Concordance Table
 #'
 #' Description
@@ -8,8 +7,7 @@
 #' @author Stu Field
 #' @examples
 #' createConcordTable(dat)
-#' @importFrom purrr set_names
-#' @export createConcordTable
+#' @export
 createConcordTable <- function(dat) {
   iter <- dat$SampleId %>% unique() %>% sort()
   purrr::map_df(iter, function(id) {
@@ -28,5 +26,5 @@ createConcordTable <- function(dat) {
                 tmp_df$rho.c %<>% round(3)
                 tmp_df[ c(1, nrow(tmp_df)), c("rho.c","ci95","p.value")]
    }) %>%
-   purrr::set_names(iter)
+   stats::setNames(iter)
 }

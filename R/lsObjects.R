@@ -1,4 +1,3 @@
-
 #' List Object Size in an Environment
 #'
 #' Creates a data frame of all the objects in \code{default=.GlobalEnv} a
@@ -17,21 +16,20 @@
 #' lsObjects("pkg.data")
 #' lsObjects("SomaGlobals")
 #' @importFrom lobstr obj_size
-#' @importFrom purrr map_chr map_dbl set_names
 #' @importFrom tibble as_tibble
-#' @export lsObjects
+#' @export
 lsObjects <- function(env = .GlobalEnv, units = "MB") {
 
   units <- match.arg(units, c("b", "Kb", "Mb", "Gb",
                               "B", "KB", "MB", "GB"))
   #denom <- switch(units, KB = 1024, MB = 1024^2, GB = 1024^3, 1)
   denom <- switch(units, KB = 1000, MB = 1000^2, GB = 1000^3, 1)
-  key   <- list("size") %>% purrr::set_names(units)
+  key   <- list("size") %>% stats::setNames(units)
   obj   <- ls(env)
   obj_list <- list()
   obj_list$object <- obj
-  obj_list$size   <- purrr::map_dbl(obj, ~ as.numeric(lobstr::obj_size(get(.x, env))))
-  obj_list$dim    <- purrr::map_chr(obj, function(.x) {
+  obj_list$size <- vapply(obj, function(.x) as.numeric(lobstr::obj_size(get(.x, env))), 0.1)
+  obj_list$dim  <- vapply(obj, function(.x) {
                           o <- get(.x, env)
                           if ( inherits(o, "function") ) {
                              ""
@@ -40,9 +38,8 @@ lsObjects <- function(env = .GlobalEnv, units = "MB") {
                           } else {
                              as.character(length(o))
                           }
-    })
-  obj_list$class <- purrr::map_chr(obj, 
-                        ~ paste(class(get(.x, env)), collapse = ", "))
+    }, "a")
+  obj_list$class <- vapply(obj, function(.x) paste(class(get(.x, env)), collapse = ", "), "a")
   obj_list %>%
     tibble::as_tibble() %>%
     dplyr::mutate(size = size / denom %>% round(2L)) %>%

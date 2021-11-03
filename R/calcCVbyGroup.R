@@ -1,4 +1,3 @@
-
 #' Calculate CVs by Group
 #'
 #' Calculate CVs by a grouping variable, e.g. `SampleGroup`.
@@ -10,14 +9,14 @@
 #' @examples
 #' calcCVbyField(sample.adat, "SampleGroup")
 #' @importFrom purrr map_df map_dbl
-#' @export calcCVbyGroup
+#' @export
 calcCVbyGroup <- function(data, group.var) {
   data %>%
     dplyr::select(getAptamers(.)) %>%    # no meta
     split(data[[group.var]]) %>%         # split in to dfs by var
     purrr::map_df(~ {                    # loop over dfs
-      purrr::map_dbl(.x, ~ {sd(.x) / mean(.x)})   # loop over apts
-      }) %>%
+      vapply(.x, function(.y) {sd(.y) / mean(.y)}, 0.1)   # loop over apts
+    }) %>%
     dplyr::mutate(AptName = getAptamers(data)) %>% # add back apt column
     dplyr::select(AptName, dplyr::everything())    # move to 1st col
 }

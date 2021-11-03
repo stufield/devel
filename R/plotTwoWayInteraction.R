@@ -1,4 +1,3 @@
-
 #' Plot & Perform two-way ANOVA
 #'
 #' Plots an interaction plot (boxplot) of a two-way ANOVA analysis of two
@@ -26,8 +25,7 @@
 #' plotTwoWayInteraction(test_data, y = "z", var = c("Response", "TimePoint"),
 #'                       levels = list(c("Disease", "Control"), NULL))
 #' @importFrom graphics lines boxplot axis
-#' @importFrom rlang signal
-#' @export plotTwoWayInteraction
+#' @export
 plotTwoWayInteraction <- function(dat, y, var,
                                   levels = list(NULL, NULL),
                                   shift = 0.25, do.int = FALSE,
@@ -36,13 +34,13 @@ plotTwoWayInteraction <- function(dat, y, var,
   df <- dplyr::filter(dat, y, var)
 
   if ( length(var) != 2 ) {
-    rlang::signal(
+    stop(
       stringr::str_glue(
         "The `var =` agrument must be of length 2 indicating \\
         the column names of the 2 factors, e.g. c('Group', 'Time')
         Currently var = {vars}",
         vars = paste0(var, collapse = ", ")
-        ), "error")
+        ), call. = FALSE)
   }
 
   if ( is.null(levels[[1]]) ) {

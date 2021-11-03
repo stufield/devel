@@ -1,4 +1,3 @@
-
 #' Compute CV Bands
 #'
 #' Calculate random variations for the passed RFU range using
@@ -17,8 +16,8 @@
 #' @note Empirical estimation.
 #' @author Kirk DeLisle
 #' @examples
-#'
-#' @export computeCVBands
+#' \dontrun{}
+#' @export
 computeCVBands <- function(rfu.range, cv, iter = 1000, conf = 0.95) {
   cv_bands <- sapply(rfu.range, function(rfu) {
                        smpl <- rfu + rnorm(iter, mean = 0, sd = rfu * cv)
@@ -31,7 +30,7 @@ computeCVBands <- function(rfu.range, cv, iter = 1000, conf = 0.95) {
 #' @describeIn computeCVBands
 #' Calculate confidence interval bands. Analytical estimation.
 #' @author Stu Field
-#' @export calcCVbands
+#' @export
 calcCVbands <- function(rfu.range, cv, conf = 0.95) {
   sapply(rfu.range, function(rfu) {
          lower <- qnorm((1 - conf) / 2, mean = rfu, sd = rfu * cv)

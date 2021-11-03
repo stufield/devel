@@ -1,19 +1,17 @@
-#' reverts Plate Scale Normalization
+#' Reverts Plate Scale Normalization
 #'
 #' Undoes plate scale normalization on an adat, which should have have PlateId
-#' and PlateScale_Scalar_<PlateId> field in the Header.Meta$HEADER attributes
+#' and `PlateScale_Scalar_<PlateId>` field in the Header.Meta$HEADER attributes
 #'
 #' @param adat A palte scaled adat
-#' @return A de-plate normalized adat
 #' @author Eduardo Tabacman
-#' @seealso \code{\link{plateNormalize}}
+#' @seealso [SomaNormalization::plateNormalize()]
 #' @references Darryl Perry's Plate Shift Normalization
-#' @keywords normalization
+#' @return A de-plate normalized adat
 #' @examples
 #' orig_adat <- deplateNormalize(adat)
-#' @export deplateNormalize
+#' @export
 deplateNormalize <- function(adat) {
-
   stopifnot("PlateId"%in%names(adat))
   # get the values for Plate SF
   psfs <- getPlateScale_Scalar(adat)
@@ -29,21 +27,24 @@ deplateNormalize <- function(adat) {
 }
 
 #' auxiliary function to get at the scale factors in the attributes of the adats
+#'
 #' @param adat an adat with PlateId and PlateScale_Scalars in its attributes
-#' @return a list of PlateScalar_Scale factors, indexed by the attribute names: PlateScale_Scalar_<PlateId>
+#' @return a list of PlateScalar_Scale factors, indexed by the
+#' attribute names: `PlateScale_Scalar_<PlateId>`
 getPlateScale_Scalar <- function(adat) {
   stopifnot("PlateId"%in%names(adat))
   # build names according to the PX scheme
   platescale_ns <- unique(paste0("PlateScale_Scalar_", adat$PlateId))
   headerAtts <- attributes(adat)$Header.Meta$HEADER
   stopifnot(all( platescale_ns %in% names(headerAtts)))
-
   headerAtts[platescale_ns]
 }
 
 #' auxiliary function to remove the scale factors in the attributes of the adats
+#'
 #' @param adat an adat with PlateId and PlateScale_Scalars in its attributes
-#' @return the same adat, but with the attributes corresponding to PlateScaling removed
+#' @return the same adat, but with the attributes corresponding
+#' to PlateScaling removed.
 removePlateScale_Scalar <- function(adat) {
   stopifnot("PlateId"%in%names(adat))
   # build names according to the PX scheme
@@ -51,10 +52,8 @@ removePlateScale_Scalar <- function(adat) {
   platescale_ns <- unique(paste0("PlateScale_Scalar_", adat$PlateId))
   headerAtts <- orig_attrs$Header.Meta$HEADER
   stopifnot(all( platescale_ns %in% names(headerAtts)))
-
   orig_attrs$Header.Meta$HEADER[platescale_ns] <- NULL
   attributes(adat) <- orig_attrs
-
   adat
 }
 

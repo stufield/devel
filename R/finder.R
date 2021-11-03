@@ -1,4 +1,3 @@
-
 #' Find Function or Object
 #'
 #' Function using fuzzy regular expression matching to determine
@@ -30,8 +29,7 @@
 #' @importFrom utils apropos file.edit
 #' @importFrom stringr str_replace_all
 #' @importFrom purrr set_names
-#' @importFrom rlang signal
-#' @export finder
+#' @export
 finder <- function(what, edit = FALSE, pos = FALSE) {
 
   ret <- utils::apropos(what, where = TRUE)        # get fuzzy matches
@@ -41,7 +39,7 @@ finder <- function(what, edit = FALSE, pos = FALSE) {
   names(ret) <- search()[ idx ]                    # get which envir it lives
 
   if ( length(ret) == 0 ) {
-    message(stringr::str_glue("* Pattern {what} not found"))
+    message("* Pattern ", what, " not found")
     return(character(0L))
   } else {
     names(ret) %<>% stringr::str_replace_all(":", "_")
@@ -59,8 +57,8 @@ finder <- function(what, edit = FALSE, pos = FALSE) {
     }
 
     if ( !grepl("^Soma|^devel$", names(ret)) )
-      rlang::signal("You should not edit functions outside SomaPackages.",
-                    "error")
+      stop("You should not edit functions outside SomaPackages.",
+           call. = FALSE)
 
     if ( length(ret[[1]]) > 1 ) {
       cat("Which function:\n")
@@ -84,7 +82,6 @@ finder <- function(what, edit = FALSE, pos = FALSE) {
   } else {
     return(ret)
   }
-
 }
 
 
@@ -113,11 +110,10 @@ getInput <- function(x) {
   out <- as.numeric(readline("*  Enter #: "))
 
   if ( !out%in%seq_along(x) ) {
-    rlang::signal(
+    stop(
       paste0("Invalid entry. Please enter number: ",
-             paste(seq_along(x), collapse = ", ")), "error")
+             paste(seq_along(x), collapse = ", ")), call. = FALSE)
   }
-
-  return(out)
+  out
 }
 

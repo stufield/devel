@@ -1,4 +1,3 @@
-
 #' Heatmap Seriation
 #'
 #' Produce a heatmap of all SOMAmers in an adat. Just a black and white total
@@ -13,7 +12,7 @@
 #' @examples
 #' seriateHeatmap(sample.adat)
 #' @importFrom seriation seriate
-#' @export seriateHeatmap
+#' @export
 seriateHeatmap <- function(data, method = "OLO", censor.crit = FALSE) {
   data     <- data[, sapply(1:ncol(data), function(col) is.numeric(data[, col]))]
   t_crit   <- qt(p = 1 - (0.05 / 2), df = nrow(data) - 2)   # calc crit t-value

@@ -1,4 +1,3 @@
-
 #' Scramble Class Variable in Data Frame
 #'
 #' Scramble the class variables in a given response variable column of a data
@@ -13,18 +12,14 @@
 #' @author Stu Field
 #' @seealso \code{\link{sample}}
 #' @examples
-#'
 #' scrambleClasses(sample.adat, "SampleGroup")
 #' scrambleClasses(sample.adat, "TimePoint")
-#'
-#' @export scrambleClasses
+#' @export
 scrambleClasses <- function(data, field="Response",
                             random.seed=sample(1000, 1)) {
    set.seed(random.seed)
    sample(data[[field]])
 }
-
-
 
 #' Permute Training Data
 #'
@@ -34,8 +29,7 @@ scrambleClasses <- function(data, field="Response",
 #' @seealso \code{\link[base]{sample}}, \code{\link{createTrainingData}}
 #' @examples
 #'
-#'
-#' @export permute
+#' @export
 permute <- function(data, ...) UseMethod("permute")
 
 

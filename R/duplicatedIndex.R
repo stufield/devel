@@ -1,4 +1,3 @@
-
 #' Determine Duplicated Entries
 #'
 #' Calculates the index/indices of the duplicated entries
@@ -11,7 +10,7 @@
 #' @examples
 #' duplicatedIndex(c(1, 1:10))
 #' duplicatedIndex(c("a", "a", "b","c"))
-#' @export duplicatedIndex
+#' @export
 duplicatedIndex <- function(x) {
    dupes <- duplicated(x) | duplicated(x, fromLast=TRUE)
    which(dupes)

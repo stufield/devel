@@ -1,4 +1,3 @@
-
 #' Pairwise Comparison Tables
 #'
 #' This is a pairwise wrapper for \code{\link{createTestsList}}, which
@@ -27,8 +26,7 @@
 #' tests <- calcPairwiseTables(tmp, group.field = "newGroup", test = "t", do.log = TRUE)
 #' names(tests)
 #' @importFrom utils combn
-#' @importFrom purrr set_names
-#' @export calcPairwiseTables
+#' @export
 calcPairwiseTables <- function(dat, group.field, comps = NULL, ...) {
 
   zap <- function(.x)
@@ -52,7 +50,7 @@ calcPairwiseTables <- function(dat, group.field, comps = NULL, ...) {
         args$class2 <- comp[2]
         return(args)
   }) %>%
-  purrr::set_names(pair_names) %>%
+  stats::setNames(pair_names) %>%
   # apply the do.call() with each arg list to createTrainingData()
   # creates a list of training data objects by pairwise group
   lapply(., do.call, what = createTrainingData) %>%

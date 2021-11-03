@@ -1,4 +1,3 @@
-
 #' Calculate Benjamini-Hochberg FDR Values
 #'
 #' Diagnostic and discovery plots to explain how q-value calculations work via
@@ -48,13 +47,12 @@
 #' p4 <- c(runif(200), runif(25, 0.01, 0.1))
 #' pvalueFDR(p4, plot = TRUE)
 #' @importFrom graphics abline grid legend
-#' @importFrom rlang signal
-#' @export pvalueFDR
+#' @export
 pvalueFDR <- function(p, alpha = 0.05, plot = FALSE, return.fdr = FALSE) {
 
   if ( length(alpha) != 1 ) {
-    rlang::signal("The `alpha =` argument must be a scalar value in [0, 1].",
-                  "error")
+    stop("The `alpha =` argument must be a scalar value in [0, 1].",
+         call. = FALSE)
   }
 
   m      <- length(p)
@@ -86,7 +84,7 @@ pvalueFDR <- function(p, alpha = 0.05, plot = FALSE, return.fdr = FALSE) {
   }
 
   if ( return.fdr ) {
-    fdr[ orig ]       # put back in orig order
+    fdr[orig]       # put back in orig order
   } else {
     data.frame(p.value = p_sort,
                penalty = k_m,
@@ -97,6 +95,4 @@ pvalueFDR <- function(p, alpha = 0.05, plot = FALSE, return.fdr = FALSE) {
                             "signif.", "null")) %>%
     dplyr::rename("penalty (k/m)" = penalty)
   }
-
 }
-

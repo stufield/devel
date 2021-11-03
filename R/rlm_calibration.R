@@ -1,4 +1,3 @@
-
 #' Robust Linear Model Calibration
 #'
 #' Performs calibration using robust linear model fitting to account for
@@ -21,24 +20,23 @@
 #' @seealso \code{\link[SomaPlyr]{getAptamers}}, \code{\link[SomaPlyr]{getMeta}}
 #' @examples
 #'
-#' @importFrom rlang signal
-#' @export rlm_calibration
+#' @export
 rlm_calibration <- function(data1, data2, apts = NULL, data1.id,
                             data2.id = data1.id, verbose = TRUE) {
 
   if ( missing(data1.id) ) {
-    rlang::signal("Must provide `data1.id =` column name to match sample IDs.",
-                  "error")
+    stop("Must provide `data1.id =` column name to match sample IDs.",
+         call. = FALSE)
   }
 
   if ( !data1.id %in% names(data1) ) {
-    rlang::signal(paste("Column name not found in `data1`:", data1.id),
-                  "error")
+    stop(paste("Column name not found in `data1`:", data1.id),
+         call. = FALSE)
   }
 
   if ( !data2.id %in% names(data2) ) {
-    rlang::signal(paste("Column name not found in `data2`:", data2.id),
-                  "error")
+    stop(paste("Column name not found in `data2`:", data2.id),
+         call. = FALSE)
   }
 
   # reduce the datasets to matching ids and align them; just for fitting the linear model
@@ -56,9 +54,9 @@ rlm_calibration <- function(data1, data2, apts = NULL, data1.id,
   if ( median(fit.data2[[apts[1]]], na.rm = TRUE) > 10 || median(fit.data1[[apts[1]]], na.rm = TRUE) > 10 ) {
     do.log <- TRUE
     if ( verbose ) {
-      rlang::signal(
+      warning(
         "Values converted to log-space for model fitting and back to linear space",
-        "warning")
+        call. = FALSE)
     }
   } else {
     do.log <- FALSE
@@ -128,27 +126,27 @@ data.catch <- function(d1, d2, ...) {
   id2  <- dots$id2
 
   if ( any(d1[[id1]] != d2[[id2]]) ) {
-    rlang::signal(
+    stop(
       "Mismatch in bridging samples. The row ordering may have failed.",
-      "error")
+      call. = FALSE)
   }
 
   if ( dim(d1)[1] == 0 || dim(d2)[1] == 0 ) {
-    rlang::signal("Row matching failure. No matching rows found.", "error")
+    stop("Row matching failure. No matching rows found.", call. = FALSE)
   }
 
   if ( any(!apts%in%names(d1)) ) {
     ss <- setdiff(apts, names(d1))
-    rlang::signal(
+    stop(
       paste("Names mismatch between `apts` and names of `data1`: ",
-            paste(ss, collapse = ", ")), "error")
+            paste(ss, collapse = ", ")), call. = FALSE)
   }
 
   if ( any(!apts %in% names(d2)) ) {
     ss <- setdiff(apts, names(d2))
-    rlang::signal(
+    stop(
       paste("Names mismatch between `apts` and names of `data2`: ",
-            paste(ss, collapse = ", ")), "error")
+            paste(ss, collapse = ", ")), call. = FALSE)
   }
 }
 

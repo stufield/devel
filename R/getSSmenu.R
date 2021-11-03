@@ -1,4 +1,3 @@
-
 #' Get SomaSciences Menu Content
 #'
 #' Get a list of SeqIds corresponding to a particular 
@@ -12,26 +11,18 @@
 #' @examples
 #' getSSmenu("v1.1k_v01") %>% head(10)
 #' @importFrom stringr str_glue str_squish
-#' @importFrom rlang signal
-#' @export getSSmenu
+#' @export
 getSSmenu <- function(menu.ver) {
 
   menu <- SomaPlyr::SSmenu
   if ( !menu.ver %in% names(menu) ) {
     stringr::str_glue(
       "Cannot find specified menu version in
-      names of SSmenu object: {menu.ver}."
-      ) %>%
+      names of SSmenu object: {menu.ver}.") %>%
       stringr::str_squish() %>%
-      rlang::signal("error")
+      stop(., call. = FALSE)
   }
-
   atts <- attributes(menu)
   out  <- menu[[ menu.ver ]]
-  attributes(out) <- list(Ver = menu.ver,
-                          date = atts$date,
-                          Author = atts$Author)
-  return(out)
-
+  structure(out, Ver = menu.ver, date = atts$date, Author = atts$Author)
 }
-

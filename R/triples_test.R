@@ -1,4 +1,3 @@
-
 #' Triples Test
 #'
 #' Doesn't quite work right yet ...
@@ -12,16 +11,15 @@
 #' @references From Hollander & Wolfe (1999); NonParametric Statistical Methods, pg 87-91.
 #' @examples
 #'
-#'
 #' @export
 triples_test <- function(x, alpha = 0.05) {
 
    n <- length(x)
 
    #if ( n <=10 )
-   #   rlang::signal(
+   #   stop(
    #     "This test is inaccurate for distributions of n < 10",
-   #     "error") 
+   #     call. = FALSE)
 
    comb_iter <- t(combn(n, 3))
    #print(dim(comb_iter))

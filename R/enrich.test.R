@@ -1,4 +1,3 @@
-
 #' Test for enrichment
 #'
 #' Calculated whether `2 x 2` table is enriched
@@ -28,11 +27,8 @@
 #' en_list <- list(n11 = 4, n1. = 7, n.1 = 6, n = 20)
 #' enrich_test(en_list)
 #' @importFrom stats fisher.test
-#' @importFrom cli rule
-#' @importFrom purrr set_names
-#' @importFrom rlang signal
 #' @importFrom crayon blue
-#' @export enrich_test
+#' @export
 enrich_test <- function(x, alternative = c("two.sided", "enrich", "deplete")) {
 
   if ( inherits(x, "matrix") ) {
@@ -44,9 +40,9 @@ enrich_test <- function(x, alternative = c("two.sided", "enrich", "deplete")) {
   } else if ( inherits(x, "list") & length(x) == 4 ) {
     # x must be passed as list with names:
     if ( is.null(names(x)) ) {
-      rlang::signal(
+      stop(
         "List must be a *named* list with: 'n11', 'n1.', 'n.1', 'n'.",
-        "error")
+        call. = FALSE)
     }
 
     n11 <- x$n11
@@ -56,7 +52,7 @@ enrich_test <- function(x, alternative = c("two.sided", "enrich", "deplete")) {
     n2. <- n - n1.
     x   <- matrix(c(n11, n.1 - n11, n1. - n11, n2. - (n.1 - n11)), ncol = 2)
   } else {
-    rlang::signal("Error in `x` argument. Incorrect format.", "error")
+    stop("Error in `x` argument. Incorrect format.", call. = FALSE)
   }
 
   ret <- list()
@@ -68,7 +64,7 @@ enrich_test <- function(x, alternative = c("two.sided", "enrich", "deplete")) {
   two_sided_double_mid <- one_sided_mid * 2  # double the one sided p-value
   # ------------------------------------- #
   prob_vec2 <- stats::dhyper(0:n.1, n1., n2., n.1) %>%
-    purrr::set_names(as.character(0:n.1))
+    stop::setNames(as.character(0:n.1))
   prob_vec2         <- prob_vec2[which(prob_vec2 <= prob_vec2[as.character(n11)])]
   two_sided_min_lik <- sum(prob_vec2)
   prob_vec2[as.character(n11)] <- prob_vec2[as.character(n11)] / 2
@@ -95,8 +91,8 @@ enrich_test <- function(x, alternative = c("two.sided", "enrich", "deplete")) {
                          cli::symbol$dot),
       CI95 = ifelse(Test == "Fisher's Exact",
                     sprintf("(%0.3f, %0.3f)",
-                            fisher$conf.int[1],
-                            fisher$conf.int[2]), cli::symbol$dot)
+                            fisher$conf.int[1L],
+                            fisher$conf.int[2L]), cli::symbol$dot)
     )
 
   writeLines(cli::rule(crayon::bold("Counts Table"), line_col = crayon::blue))
@@ -106,8 +102,7 @@ enrich_test <- function(x, alternative = c("two.sided", "enrich", "deplete")) {
   print(hyper)
   writeLines(cli::rule(line = 2, line_col = crayon::green))
   #ret$hyper[["p-value"]][ ret$hyper[["p-value"]] > 1 ] <- 1
-
-  invisible(list(results = hyper,
-                 confusion = ConfusionTable,
+  invisible(list(results     = hyper,
+                 confusion   = ConfusionTable,
                  alternative = altern))
 }

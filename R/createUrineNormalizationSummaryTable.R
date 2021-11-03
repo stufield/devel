@@ -1,4 +1,3 @@
-
 #' Create Normalization Summary Table for Urine
 #'
 #' This function summarizes the unrine normalization metrics
@@ -8,13 +7,12 @@
 #' @param dat A 3-group normalized ADAT, with multiple
 #' plates that have been normalized into one data frame ("soma.adat").
 #' @return A summary table of the normalization results
-#' @author **Stu Field**, **Eduardo Tabacman**
+#' @author Stu Field, Eduardo Tabacman
 #' @examples
 #' \dontrun{
 #' createUrineNormalizationSummaryTable(dat)
 #' }
-#' @importFrom purrr set_names
-#' @export createUrineNormalizationSummaryTable
+#' @export
 createUrineNormalizationSummaryTable <- function(dat) {
 
   if ( all(!is.na(as.numeric(dat$PlateId))) ) {   # catch for numeric plateIds w/o leading zeros
@@ -26,7 +24,7 @@ createUrineNormalizationSummaryTable <- function(dat) {
   hybnorms <- lapply(spldata, function(.x) {
                        hyb <- range(.x$HybControlNormScale)
                        hyb <- sprintf("(%0.2f, %0.2f)", hyb[1], hyb[2])
-                       data.frame(a = hyb) %>% purrr::set_names("Hyb SF")
+                       data.frame(a = hyb) %>% stats::setNames("Hyb SF")
     }) %>% do.call(rbind, .)
 
   if ( "PlateScale_Scalar_S2" %in% names(dat) ) {
@@ -37,7 +35,7 @@ createUrineNormalizationSummaryTable <- function(dat) {
   mednorms <- lapply(spldata, function(.x) {
                        med <- range(.x[, grep("_S2$", getNormNames(.x), value = TRUE)])
                        med <- sprintf("(%0.2f, %0.2f)", med[1], med[2])
-                       data.frame(b = med) %>% purrr::set_names("Med SF")
+                       data.frame(b = med) %>% stats::setNames("Med SF")
     }) %>% do.call(rbind, .)
 
    fus <- lapply(spldata, function(.x) {

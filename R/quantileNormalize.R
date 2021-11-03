@@ -1,4 +1,3 @@
-
 #' Perform Quantile Normalization
 #'
 #' Normalize rows (i.e. samples or arrays) of a data frame to have identical
@@ -40,7 +39,7 @@
 #' names(m) <- sprintf('gene%s', LETTERS[1:4])
 #' quantileNormalize(m)
 #' quantileNormalize(m, ties = FALSE) # matches Wikipedia example (transposed)
-#' @export quantileNormalize
+#' @export
 quantileNormalize <- function(x, ties = TRUE) {
 
   if ( !inherits(x, "matrix") ) {

@@ -67,8 +67,7 @@
 #'                                    order = NULL,
 #'                                    plot_title = "Lean body mass", n_points = 20)
 #' exp_lbm_final$med_plot
-#' @export exploreNAnalytes
-#'
+#' @export
 exploreNAnalytes <- function(
   adat, method, response,
   preprocess = c("log10", "center", "scale"),

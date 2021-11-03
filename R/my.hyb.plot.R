@@ -1,10 +1,7 @@
-
 #' Plot Hyb Scale Factors & CDF
 #'
 #' A function that plots the Hybridization Scale Factors from Hyb Normalized
 #' data. Plots both the CDF and barplot of the scale factors.
-#'
-#' %% ~~ If necessary, more details than the description above ~~
 #'
 #' @param dat A loaded data frame of aptamer data (ADAT).
 #' @param title A string indicating the data title for the ADAT.
@@ -12,14 +9,11 @@
 #' @note %% ~~further notes~~
 #' @author Stu Field, Darryl Perry
 #' @seealso \code{\link[SomaGlobals]{plotCDF}}
-#' @references %% ~put references to the literature/web site here ~
-#' @keywords ~kwd1 ~kwd2
 #' @examples
 #'
 #'
-#' @export my.hyb.plot
-my.hyb.plot <- function(dat, title="NULL") {
-
+#' @export
+my.hyb.plot <- function(dat, title = "NULL") {
    opar <- par(par.def)
    on.exit(par(opar))
    dat <- dat[ order(dat$PlateId, dat$SlideId, dat$Subarray), getMeta(dat) ]
@@ -58,8 +52,5 @@ my.hyb.plot <- function(dat, title="NULL") {
    abline(h=1.0, col=8, lty=2)
    plates <- cumsum(sapply(subarrays,length))
    abline(v=plates[-length(plates)]+0.5, col="darkred", lty=2)
-   dat
-
+   invisible(dat)
 }
-#### ---- END FUNCTION ---- ####
-

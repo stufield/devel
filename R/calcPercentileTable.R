@@ -1,4 +1,3 @@
-
 #' Calculate percentiles
 #'
 #' Calculate percentiles of a series of vectors and put
@@ -15,16 +14,14 @@
 #' x <- lapply(seq(50, 250, by = 50), function(x) rnorm(100, mean = x))
 #' names(x) <- head(LETTERS, length(x))
 #' calcPercentileTable(x)
-#' @importFrom purrr map
-#' @importFrom rlang signal
 #' @importFrom stats quantile
-#' @export calcPercentileTable
+#' @export
 calcPercentileTable <- function(x, probs = c(0.05, 0.25, 0.5, 0.75, 0.95)) {
   if ( !inherits(x, "list") || is.null(names(x)) ) {
-    rlang::signal(
+    stop(
       paste("The `x =` argument must be a *named* list.", names(x)),
-      "error")
+      call. = FALSE)
   }
-  purrr::map(x, ~ quantile(.x, probs = probs)) %>%
+  lapply(x, function(.x) quantile(.x, probs = probs)) %>%
     data.frame()
 }

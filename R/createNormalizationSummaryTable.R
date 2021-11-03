@@ -1,4 +1,3 @@
-
 #' Create Normalization Summary Table
 #'
 #' This function summarizes the normalization and calibration metrics
@@ -16,8 +15,7 @@
 #' \dontrun{
 #' createNormalizationSummaryTable(dat)
 #' }
-#' @importFrom purrr set_names
-#' @export createNormalizationSummaryTable
+#' @export
 createNormalizationSummaryTable <- function(dat) {
 
   if ( all(!is.na(as.numeric(dat$PlateId))) ) {   # catch for numeric plateIds w/o leading zeros
@@ -29,7 +27,7 @@ createNormalizationSummaryTable <- function(dat) {
   hybnorms <- lapply(spldata, function(.x) {
                        hyb <- range(.x$HybControlNormScale)
                        hyb <- sprintf("(%0.2f, %0.2f)", hyb[1], hyb[2])
-                       data.frame(a = hyb) %>% purrr::set_names("Hyb SF")
+                       data.frame(a = hyb) %>% stats::setNames("Hyb SF")
     }) %>% do.call(rbind, .)
 
   if ( "PlateScale_Scalar" %in% names(dat) ) {
@@ -40,13 +38,11 @@ createNormalizationSummaryTable <- function(dat) {
   mednorms <- lapply(spldata, function(.x) {
                        med <- range(.x[, getNormNames(.x)])
                        med <- sprintf("(%0.2f, %0.2f)", med[1], med[2])
-                       data.frame(b = med) %>% purrr::set_names("Med SF")
+                       data.frame(b = med) %>% stats::setNames("Med SF")
     }) %>% do.call(rbind, .)
 
   sop        <- calibrationSOP(dat, do.plot = FALSE, verbose = FALSE)$cal.table
   sop        <- sop[, names(sop) != "Median Shift"] %>% round(2)
   names(sop) <- c("Cal SF", "Tails_%", "Tails_#")
   cbind(hybnorms, mednorms, sop)
-
 }
-

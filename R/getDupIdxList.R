@@ -1,4 +1,3 @@
-
 #' Get Duplicated Index List
 #'
 #' Calculate the indices of the duplicated values of a vector
@@ -17,9 +16,8 @@
 #' getDupIdxList(LETTERS)      # no duplicates (empty list)
 #' getDupIdxList(c(1, 1:10))   # 1 duplicate
 #' @seealso \code{\link{duplicatedIndex}}
-#' @importFrom purrr set_names
-#' @export getDupIdxList
+#' @export
 getDupIdxList <- function(x) {
-  duplicatedIndex(x) %>% x[.] %>% unique() %>% {
-    purrr::map(., function(id) which(x == id)) %>% purrr::set_names(.)}
+  vals <- duplicatedIndex(x) %>% x[.] %>% unique()
+  lapply(vals, function(id) which(x == id)) %>% setNames(., .)
 }

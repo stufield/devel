@@ -1,4 +1,3 @@
-
 #' Modify Aptamer Content
 #'
 #' Modify aptamer content of a data frame of aptamer data, typically subsetting
@@ -18,13 +17,12 @@
 #' names(SSmenu)
 #' x <- modifyAptContent(sample.adat, menu.ver = "v1.1k_v02")  # v2 1124
 #' dim(x)
-#' @export modifyAptContent
+#' @export
 modifyAptContent <- function(adat, menu.ver = "v1.1k_v01") {
   keep <- getSSmenu(menu.ver = menu.ver) %>%
     matchSeqIds(getAptamers(adat), order.by.x = FALSE)
   new <- dplyr::select_if(adat, names(adat) %in% c(getMeta(adat), keep))
   rownames(new) <- rownames(adat)
-  class(new)    <- class(adat)
-  return(new)
+  class(new) <- class(adat)
+  new
 }
-

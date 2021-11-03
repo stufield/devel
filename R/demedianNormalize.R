@@ -25,11 +25,10 @@
 #' @examples
 #' demedianNormalize(sample.adat)
 #' @importFrom magrittr "%>%" "%<>%"
-#' @importFrom rlang signal
 #' @importFrom stringr str_remove_all
 #' @importFrom SomaReadr cleanNames
 #' @importFrom SomaNormalization getNormNames
-#' @export demedianNormalize
+#' @export
 demedianNormalize <- function(adat,
                             do_field = "SampleType",
                             do_regexp = "QC|Sample",
@@ -39,8 +38,8 @@ demedianNormalize <- function(adat,
     sort() %>% cleanNames()
 
   if ( length(scale_names) == 0  ) {
-    rlang::signal("No median normalization scale factors detected in `adat`.",
-                  "error")
+    stop("No median normalization scale factors detected in `adat`.",
+         call. = FALSE)
   }
 
   mixes        <- getAptamerDilution(adat, drop.hyb = TRUE, ...)
@@ -53,8 +52,9 @@ demedianNormalize <- function(adat,
   if ( (length(mixes) != length(scale_names)) || (!all(names(mixes) == scale_names)) ) {
     print(scale_names)
     print(names(mixes))
-    rlang::signal(
-      "Mis-match between dilution mixes and available scale factors.", "error")
+    stop(
+      "Mis-match between dilution mixes and available scale factors.", 
+      call. = FALSE)
   }
 
   names(adat) %<>% cleanNames()

@@ -1,15 +1,19 @@
-
+#' Create Single-Sample Reference
+#'
 #' Create a reference from un-median normalized (but calibrated) data
 #' using single-sample adaptive maximum likelihood normalization (ssANML)
 #' We start with an initiaReference and an adat (in particular, we use
 #' Covance-Boise for the initialReference, and all of Covance ), then use ssANML
-#' on all the samples and rebuild references from them. Rinse, repeat until SFs don't change
+#' on all the samples and rebuild references from them. Rinse, repeat until SFs don't change.
 #'
-#' @param adat the data to use for reference building
+#' @param adat the data to use for reference building.
 #' @param initialRef a reference to kick-start the process.
 #' If NULL (default), use all of the adat samples
-#' @param cutoff the limit to use in the call to ssANML (default: 2), to decide which analytes get dropped
-#' @return a reference object (see generateRefParams below) of the final normalized data
+#' @param cutoff the limit to use in the call to ssANML (default: 2),
+#' to decide which analytes get dropped
+#' @return a reference object (see generateRefParams below)
+#' of the final normalized data
+#' @export
 generateSingleSampleReference <- function(adat, initialRef=NULL,
                                           effect_cut=2, recenter = FALSE,
                                           maxrelerr=1e-2, maxiter=20) {
@@ -69,11 +73,10 @@ generateSingleSampleReference <- function(adat, initialRef=NULL,
 }
 
 #' Auxiliary function to create references from an adat
+#'
 #' The references parameters to return are:
 #' Univariate: mean, median, sd and mad of RFU values, and same of logRFU values
 #' Multivariate: an estimate of the Covariance matrix for RFU and logRFU values
-#' @param adat the data from which to create the reference
-#' @return a ref data.frame, with columns SeqId, mean, median, RefSD, mad, log_mean, RefLog10Median, log_sd, RefLog10MAD
 #'
 #' TODO:
 #' # a list with names RFU and logRFU, each element consisting of a list of
@@ -82,6 +85,10 @@ generateSingleSampleReference <- function(adat, initialRef=NULL,
 #' $multi: list of
 #'   $CovM a matrix, estimate of the covariance matrix
 #'   $PrecM, estimate of the covariance matrix
+#'
+#' @param adat the data from which to create the reference
+#' @return a ref data.frame, with columns SeqId, mean, median, RefSD, mad, log_mean, RefLog10Median, log_sd, RefLog10MAD
+#' @noRd
 computeRefParams <- function(adat) {
   snames <- getAptamers(adat)
   sdata <- getAptData(adat)
@@ -101,14 +108,12 @@ computeRefParams <- function(adat) {
   newref
 }
 
+
 #' Auxiliary function to create references from an adat
+#'
 #' The references parameters to return are:
 #' Univariate: mean, median, sd and mad of RFU values, and same of logRFU values
 #' Multivariate: an estimate of the Covariance matrix for RFU and logRFU values
-#' @param adat the data from which to create the reference
-#' @param baseref the basic reference (median and mad) to select samples to use for each analyte
-#' @param effect_cut cutoff for considering values to estimate params (defaut=2)
-#' @return a ref data.frame, with columns SeqId, mean, median, RefSD, mad, log_mean, RefLog10Median, log_sd, RefLog10MAD
 #'
 #' TODO:
 #' # a list with names RFU and logRFU, each element consisting of a list of
@@ -117,6 +122,11 @@ computeRefParams <- function(adat) {
 #' $multi: list of
 #'   $CovM a matrix, estimate of the covariance matrix
 #'   $PrecM, estimate of the covariance matrix
+#' @param adat the data from which to create the reference
+#' @param baseref the basic reference (median and mad) to select samples to use for each analyte
+#' @param effect_cut cutoff for considering values to estimate params (defaut=2)
+#' @return a ref data.frame, with columns SeqId, mean, median, RefSD, mad, log_mean, RefLog10Median, log_sd, RefLog10MAD
+#' @noRd
 computeRefParams_kCentral <- function(adat, baseref=NULL, effect_cut=2) {
   snames <- getAptamers(adat)
   sdata <- getAptData(adat)
@@ -156,6 +166,7 @@ computeRefParams_kCentral <- function(adat, baseref=NULL, effect_cut=2) {
 kCentralSD <- function(x, k=2) {
   max( abs(x-mean(x, na.rm = TRUE))/k, sd(x, na.rm = TRUE))
 }
+
 kCentralMAD <- function(x, k=2) {
   max( abs(x-median(x, na.rm = TRUE))/k, mad(x, na.rm = TRUE, constant = 1.4826))
 }

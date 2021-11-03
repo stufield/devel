@@ -1,4 +1,3 @@
-
 #' Undo median normalization
 #'
 #' Reverse the steps of median normalization.
@@ -17,19 +16,18 @@
 #' @seealso \code{\link{medianNormalize}}, \code{\link{getAptamerDilution}}
 #' @examples
 #' denormalizeAdat(sample.adat)
-#' @importFrom rlang signal
 #' @importFrom stringr str_remove_all
 #' @importFrom SomaReadr cleanNames
 #' @importFrom SomaNormalization getNormNames
-#' @export denormalizeAdat
+#' @export
 denormalizeAdat <- function(adat, ...) {
 
   scale_names <- getNormNames(adat, drop.hyb = TRUE) %>%
     sort() %>% cleanNames()
 
   if ( length(scale_names) == 0  ) {
-    rlang::signal("No median normalization scale factors detected in `adat`.",
-                  "error")
+    stop("No median normalization scale factors detected in `adat`.",
+         call. = FALSE)
   }
 
   mixes        <- getAptamerDilution(adat, drop.hyb = TRUE, ...)
@@ -40,17 +38,16 @@ denormalizeAdat <- function(adat, ...) {
   if ( (length(mixes) != length(scale_names)) || (!all(names(mixes) == scale_names)) ) {
     print(scale_names)
     print(names(mixes))
-    rlang::signal(
-      "Mis-match between dilution mixes and available scale factors.", "error")
+    stop(
+      "Mis-match between dilution mixes and available scale factors.",
+      call. = FALSE)
   }
 
-  message("* Denormalizing ADAT ... {deparse(substitute(adat))}")
+  message("* Denormalizing ADAT ... ", deparse(substitute(adat)))
   names(adat) %<>% cleanNames()
 
   for ( mix in scale_names ) {
     adat[, mixes[[mix]]] <- adat[, mixes[[mix]] ] / adat[[mix]]
   }
-
-  return(adat)
-
+  adat
 }

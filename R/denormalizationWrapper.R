@@ -9,7 +9,6 @@
 #'
 #' @param adat A fully normalized adat to be processed (multiple runs, usually),
 #' should have a `PlateId` column.
-#'
 #' @return A list of ADATs consisting of:
 #' \item{raw }{Raw ADAT }
 #' \item{hyb }{Internal hybridization }
@@ -22,7 +21,8 @@
 #' @seealso \code{\link{normalizationWrapper}}
 #' @references SomaLogic Platform BI
 #' @examples
-#' @export denormalizationWrapper
+#' \dontrun{}
+#' @export
 denormalizationWrapper <- function(adat) {
   out <- list()
   out$med <- adat
@@ -31,6 +31,5 @@ denormalizationWrapper <- function(adat) {
   out$imed <- deplateNormalize(out$plt)
   out$hyb <- demedianNormalize(out$imed, do_field = "SampleType", do_regexp = "Calibrator|Buffer")
   out$raw <- dehybNormalize(out$hyb)
-  # return
   out
 }

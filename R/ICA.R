@@ -1,4 +1,3 @@
-
 #' Independent Components Analysis (ICA)
 #'
 #' The data matrix X is considered to be a linear combination of
@@ -19,26 +18,25 @@
 #'
 #' @param data A data matrix *n* rows representing
 #' observations and *p* columns representing variables.
-#' Alternatively a "soma.adat" object. If a data matrix,
+#' Alternatively a `soma_adat` object. If a data matrix,
 #' ensure *only* feature data is being passed. In the latter,
 #' the meta data will be removed.
 #' @param n.comp Integer. Number of components to be extracted.
-#' See \code{\link[fastICA]{fastICA}}.
-#' @param ... Additional arguments passed to \code{\link{fastICA}}.
+#' See [fastICA::fastICA()].
+#' @param ... Additional arguments passed to [fastICA::fastICA()].
 #' @return A list of:
 #' \item{rotation }{The rotation, aptamers.}
 #' \item{x }{The ICA projection, samples.}
 #' \item{sdev }{Standard deviations, used to calculate variances.}
 #' @author Mike Mehan
-#' @note There is also an ICA implementation from the \code{e1071}
+#' @note There is also an ICA implementation from the \pkg{e1071}
 #' package called \code{\link[e1071]{ica}}.
-#' @seealso \code{\link[fastICA]{fastICA}}, \code{\link[e1071]{ica}}
+#' @seealso [fastICA::fastICA()], [e1071::ica()]
 #' @examples
 #' ica <- ICA(sample.adat, n.comp = 5)
-#' @importFrom fastICA fastICA
-#' @export ICA
+#' @export
 ICA <- function(data, n.comp, ...) {
-  if ( SomaReadr::is.soma.adat(data) ) {
+  if ( SomaReadr::is.soma_adat(data) ) {
     data %<>% stripMeta()
   }
   data.ica <- fastICA::fastICA(data, n.comp = n.comp, ...)
@@ -50,4 +48,3 @@ ICA <- function(data, n.comp, ...) {
   list(rotation = rot, x = proj,
        sdev = rep(1, min(nrow(rot), nrow(proj))))
 }
-

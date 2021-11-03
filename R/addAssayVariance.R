@@ -1,4 +1,3 @@
-
 #' Add assay Noise to CDF plot
 #'
 #' Add a CDF of the estimated assay variance via the Covance QC samples.
@@ -18,9 +17,8 @@
 #' \code{\link[stats]{rnorm}}, \code{\link[SomaGlobals]{plotCDF}}
 #' @examples
 #'
-#' @importFrom rlang signal
 #' @importFrom stats rnorm
-#' @export addAssayVariance
+#' @export
 addAssayVariance <- function(apt, apt.median, assay.var = NULL, mad = NULL,
                              matrix.type = c(NA, "plasma", "serum"), ...) {
 
@@ -32,9 +30,9 @@ addAssayVariance <- function(apt, apt.median, assay.var = NULL, mad = NULL,
     if ( is.null(mad) ) {
       matrix.type <- match.arg(matrix.type)
       if ( is.na(matrix.type) ) {
-        rlang::signal(
+        stop(
           "Must provide `matrix.type =` argument: is this plasma or serum?",
-          "error")
+          call. = FALSE)
       }
       mad <- mLod[[matrix.type]][ matchSeqIds(apt, rownames(mLod[[matrix.type]])), "madNQCreplicate"]
     }
@@ -42,11 +40,11 @@ addAssayVariance <- function(apt, apt.median, assay.var = NULL, mad = NULL,
   } else if ( is.null(mad) ) {
     assay_sd <- sqrt(assay.var)
   } else {
-    rlang::signal(
+    stop(
       stringr::str_glue(
         "Unable to determine assay variance: provide \\
         either `assay.var =`, `mad =`, or pass neither."
-        ), "error")
+        ), call. = FALSE)
   }
 
   if ( is.finite(assay_sd) ) {

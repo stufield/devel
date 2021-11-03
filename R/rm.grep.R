@@ -1,4 +1,3 @@
-
 #' Remove Objects via Pattern Match
 #'
 #' Sequentially removes objects from the `.GlobalEnv` that match
@@ -6,7 +5,7 @@
 #' whether to actually remove the matching object.
 #'
 #' @param pattern String. The regular expression to match.
-#' @return `NULL`
+#' @return `NULL`, invivibly.
 #' @author Stu Field
 #' @seealso \code{\link[base]{grep}}
 #' @examples
@@ -17,7 +16,7 @@
 #' ls()
 #' rm_grep("kitt")
 #' ls()
-#' @export rm_grep
+#' @export
 rm_grep <- function(pattern) {
   if ( !is.character(pattern) ) {
      pattern <- deparse(substitute(pattern))
@@ -32,5 +31,5 @@ rm_grep <- function(pattern) {
       next
     }
   }
-  return()
+  invisible(NULL)
 }

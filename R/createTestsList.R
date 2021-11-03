@@ -1,4 +1,3 @@
-
 #' Create Various Stat Test Tables
 #'
 #' Creates appropriate statistical output tables
@@ -27,41 +26,40 @@
 #' sapply(age_dfs, function(x) table(x$SampleGroup))
 #' ks <- createTestsList(age_dfs, test = "ks", response = "SampleGroup")
 #' t <- createTestsList(age_dfs, test = "t", response = "SampleGroup")
-#' @export createTestsList
+#' @export
 createTestsList <- function(dat.list,
                             test = c("t", "wilcox", "ks", "cor", "lr", "kw", "mackwolfe"),
                             which.paired = numeric(0), ...) {
 
   if ( inherits(dat.list, "data.frame") ) {
-    rlang::signal(
+    stop(
       stringr::str_glue(
         "The `dat.list =` argument is a single data.frame, but \\
         should be a LIST of data frames.
         Maybe you should try `calc.x()` directly?"
-        ), "error")
+        ), call. = FALSE)
   }
 
   if ( is.null(names(dat.list)) ) {
-    rlang::signal("The `dat.list =` argument must be a *named* list.",
-                  "error")
+    stop("The `dat.list =` argument must be a *named* list.", call. = FALSE)
   }
 
   test <- match.arg(test)
 
   if ( !is.numeric(which.paired) || (length(which.paired) > 0 && max(which.paired) > length(dat.list)) ) {
-    rlang::signal(
+    stop(
       stringr::str_glue(
         "Bad `which.paired =` argument. Should be numeric.
         Which `dat.list` entries are to be paired analyses?"
-        ), "error")
+        ), call. = FALSE)
   }
 
   if ( test == "mackwolfe" && any(!c("factor.order", "group.field") %in% names(list(...))) ) {
-    rlang::signal(
+    stop(
       stringr::str_glue(
         "If performing a Mack-Wolfe test, you must pass both \\
         the `group.field =` and `factor.order =` arguments."
-        ), "error")
+        ), call. = FALSE)
   }
 
   which_unpaired <- setdiff(seq(length(dat.list)), which.paired)
@@ -69,18 +67,18 @@ createTestsList <- function(dat.list,
   args           <- list(...)
 
   unpaired_tests <- dat.list[which_unpaired] %>%
-    purrr::map(function(.data) {
-               args$training.data <- .data
-               do.call(.fun, args)
-         })
+    lapply(function(.data) {
+           args$training.data <- .data
+           do.call(.fun, args)
+    })
 
   if ( length(which.paired) > 0 ) {
     paired_tests <- dat.list[which.paired] %>%
-      purrr::map(function(.data) {
-                 args$training.data <- .data
-                 args$paired <- TRUE
-                 .fun(data, args)
-        })
+      lapply(function(.data) {
+             args$training.data <- .data
+             args$paired <- TRUE
+             .fun(data, args)
+      })
     ret <- c(unpaired_tests, paired_tests)[names(dat.list)]
   } else {
     ret <- unpaired_tests

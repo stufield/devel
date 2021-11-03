@@ -2,7 +2,7 @@
 #'
 #' Reverse the steps of calibration.
 #' This involves dividing the analytes in each plate by their
-#' corresponding scale factor
+#' corresponding scale factor.
 #'
 #' @param adat A `soma.adat` object that has been calibrated and contains calibration scale factors in its attributes
 #' @param ... Additional arguments passed to \code{\link{Somanormalization::getCalSFs}},
@@ -15,9 +15,8 @@
 #' decalibrate(sample.adat)
 #' @importFrom SomaReadr cleanNames
 #' @importFrom SomaNormalization getCalSFs
-#' @export dehybNormalize
+#' @export
 decalibrate <- function(adat, ...) {
-
   calsfs <- getCalSFs(adat, ...)
   # get the same names for each sample in the adat
   plate_names <- cleanNames(sprintf("Cal.Set.%s", adat$PlateId))
@@ -25,12 +24,9 @@ decalibrate <- function(adat, ...) {
   # remove calsfs from attributes
   tmp_ad <- attributes(adat)
   tmp_ad$Col.Meta[unique(plate_names)] <- NULL
-
   for (pn in unique(plate_names)) {
     adat[plate_names == pn, calsfs$AptName] <- t(t(adat[plate_names == pn, calsfs$AptName])/calsfs[[pn]])
   }
-
   attributes(adat) <- tmp_ad
-
-  return(adat)
+  adat
 }

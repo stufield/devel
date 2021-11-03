@@ -1,4 +1,3 @@
-
 #' Merge Meta Data
 #'
 #' Merge additional meta data to an existing adat based on unique row sample
@@ -30,9 +29,7 @@
 #' @importFrom utils read.csv
 #' @importFrom purrr safely
 #' @importFrom stringr str_glue
-#' @importFrom rlang signal
-#' @importFrom SomaReadr is.intact.attributes
-#' @export mergeMetaData
+#' @export
 mergeMetaData <- function(adat, meta, ..., fix.atts = FALSE)  {
 
   safe_exists <- purrr::safely(file.exists, otherwise = FALSE)
@@ -41,12 +38,12 @@ mergeMetaData <- function(adat, meta, ..., fix.atts = FALSE)  {
   } else if ( inherits(meta, c("data.frame", "tbl_df")) ) {
     meta_df <- meta
   } else {
-    rlang::signal(
+    stop(
       stringr::str_glue(
         "The `meta =` argument must be one of: 
         1) a `data.frame` containing meta data
         2) a path to a CSV file containing meta data"
-        ), "error")
+        ), call. = FALSE)
   }
 
   adat_merge <- adat %>%
@@ -54,20 +51,19 @@ mergeMetaData <- function(adat, meta, ..., fix.atts = FALSE)  {
     dplyr::select(getMeta(.), dplyr::everything())
 
   if ( nrow(adat) != nrow(adat_merge) ) {
-    rlang::signal("New rows added during merg despite left_join()", "warning")
+    warning("New rows added during merg despite left_join()", call. = FALSE)
   }
 
   if ( !isTRUE(all.equal(data.matrix(adat[, getAptamers(adat)]),
                          data.matrix(adat_merge[, getAptamers(adat_merge)]),
                          check.attributes = FALSE)) )
-    rlang::signal(
+    stop(
       "Feature RFU data mismatch during merging. Please check.",
-      "error")
+      call. = FALSE
+    )
 
   if ( fix.atts ) {
     adat_merge %<>% createChildAttributes(adat, verbose = FALSE)
   }
-
-  return(adat_merge)
-
+  adat_merge
 }

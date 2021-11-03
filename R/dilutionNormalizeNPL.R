@@ -136,7 +136,7 @@ getInit <- function(data, npar = 4) {
 #' }
 #' @importFrom stats optim
 #' @importFrom purrr list_modify
-#' @export fit.npl
+#' @export
 fit.npl <- function(data, npar = 4, do.log = TRUE, ...) {
 
   if ( !setequal(c("x", "y"), names(data)) ) {
@@ -343,7 +343,6 @@ plot.npl <- function(x, ..., bg = ggplot2::alpha("gray30", 1/3),
 #' @rdname fit.npl
 #' @seealso \code{\link{cat}}
 #' @importFrom purrr map2
-#' @method print npl
 #' @export
 print.npl <- function(x, ...) {
   cat("* n-Parameter Logistic Fit:", x$npar, "\n")

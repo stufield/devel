@@ -1,39 +1,40 @@
 Package: devel
 Type: Package
-Title: SomaLogic Inc. R Development Scripts
+Title: R Development Scripts
 Version: 0.0.0.9999
 Authors@R: c(
   person(given = "Stu",
          family = "Field",
-         email = "sfield@somalogic.com",
+         email = "stu.g.field@gmail.com",
          role = c("aut", "cre"))
   )
 Description: This "package" is the development package.
-  Do not attempt to load it as you would a typical package.
-  It contains a loose testing ground of functionality that,
-  if deemed sufficiently useful, will eventually be migrated into an
-  appropriate member of the 'somaverse'.
+    Do not attempt to load it as you would a typical package.
+    It contains a loose testing ground of functionality that,
+    if deemed sufficiently useful, will eventually be migrated
+    into an existing package.
 License: GPL-3 | file LICENSE
-Depends: R (>= 3.4.0)
+Depends: R (>= 4.0.0)
 Imports:
-  latex2exp,
-  graphics,
-  fs,
-  crayon,
-  cli,
-  rlang,
-  purrr,
-  stringr,
-  tibble,
-  lobstr
-Suggests: testthat, knitr, car
-X-CRAN-COMMENT: This is the AAA team of scripts that may or may 
-  not make it to the show.
+    dplyr,
+    graphics,
+    fs,
+    crayon,
+    cli,
+    purrr,
+    stringr,
+    tibble,
+    lobstr
+Suggests:
+    fastICA,
+    testthat,
+    knitr,
+    car
 LazyLoad: true
 LazyData: true
 Language: en-US
 URL: www.somalogic.com
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr

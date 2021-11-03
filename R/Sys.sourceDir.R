@@ -1,4 +1,3 @@
-
 #' Source Files from Directory
 #'
 #' Evaluates and parses all `*.R` files and their contained functions
@@ -19,12 +18,11 @@
 #' Sys.sourceDir(dir, envir.name = "sandbox")
 #' }
 #' @importFrom fs path_real dir_ls
-#' @importFrom rlang signal
-#' @export Sys.sourceDir
+#' @export
 Sys.sourceDir <- function(path, envir.name = "e") {
 	files <- fs::dir_ls(path, regexp = "[.][Rr]$") %>% fs::path_real()
 	if ( length(files) == 0 ) {
-    rlang::signal(paste0("No *.R scripts present in: ", path), "error")
+    stop(paste0("No *.R scripts present in: ", path), call. = FALSE)
   }
 	if ( envir.name %in% search() ) {
 		detach(envir.name, unload = TRUE, force = TRUE, character.only = TRUE)
@@ -33,4 +31,3 @@ Sys.sourceDir <- function(path, envir.name = "e") {
 	lapply(files, sys.source, envir = en, keep.source = TRUE)
 	attach(en, name = envir.name, warn.conflicts = FALSE, pos = length(search()))
 }
-

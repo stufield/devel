@@ -1,4 +1,3 @@
-
 #' Evaluate calibration via QC
 #'
 #' This function calculates the minimum ratio of the QC samples to their
@@ -34,13 +33,12 @@
 #' }
 #' @importFrom purrr map map_df set_names
 #' @importFrom magrittr set_rownames
-#' @importFrom rlang signal
-#' @export evaluateCalibrationQC
+#' @export
 evaluateCalibrationQC <- function(cal.data, QCref = NULL) {
 
   apts       <- getAptamers(cal.data)
   plates     <- cal.data$PlateId %>% unique()
-  plate_data <- purrr::map(plates, function(.x) {
+  plate_data <- lapply(plates, function(.x) {
                            filterAdat(cal.data,
                                       PlateId == .x,
                                       SampleType == "QC") %>%
@@ -54,12 +52,12 @@ evaluateCalibrationQC <- function(cal.data, QCref = NULL) {
   }
 
   if ( !all(rownames(QCref) == apts) ) {
-    rlang::signal(
+    stop(
       "Something wrong with ordering of somamers in `QCref` vs. `cal.data`",
-      "error")
+      call. = FALSE)
   }
 
-  purrr::map(plate_data, function(plate) {
+  lapply(plate_data, function(plate) {
              sapply(seq_len(nrow(plate)), function(.r) {   # calc 4 ratios
                     id  <- plate[.r, "SampleId"]
                     ref <- QCref[, id]
@@ -73,4 +71,3 @@ evaluateCalibrationQC <- function(cal.data, QCref = NULL) {
     purrr::map_df(function(plate)
                   apply(plate, 1, min, na.rm = TRUE))  # choose best
 }
-

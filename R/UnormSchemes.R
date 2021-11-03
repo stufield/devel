@@ -176,25 +176,24 @@ UnormCompSubset <- function(adat,
   
   subset_n <- names(soma_subset)
   if (length(soma_subset) != 1 | is.null(subset_n)) {
-    rlang::signal(
+    stop(
       "`soma_subset` should have only one (named) element: a vector of SOMAmer names",
-      "error")
+      call. = FALSE)
   }
   
   # normalize only the subset (we'll later apply the scale factor to everything)
   calref_ss <- calref[getSeqId(soma_subset[[1]], trim.version = TRUE)]
   popref_ss <- popref %>% dplyr::filter(SeqId %in% getSeqId(soma_subset[[1]], trim.version = TRUE))
   
-  normed_tmp <-
-    UnormInGroups(adat,
-               calref = calref_ss,
-               popref = popref_ss,
-               soma_groups = soma_subset,
-               split_by = "PlateId",
-               hyb_by = "PlateId",
-               cutoff = cutoff,
-               do_round = TRUE,
-               verbose = getOption("verbose")) 
+  normed_tmp <- UnormInGroups(adat,
+                  calref = calref_ss,
+                  popref = popref_ss,
+                  soma_groups = soma_subset,
+                  split_by = "PlateId",
+                  hyb_by = "PlateId",
+                  cutoff = cutoff,
+                  do_round = TRUE,
+                  verbose = getOption("verbose")) 
   out <- normed_tmp
   # fix one by one
   # what needs to change
@@ -222,4 +221,3 @@ UnormCompSubset <- function(adat,
   # We keep the Effects for restricted subset only, too (the rest of the valueas are NA)
   out
 }
-

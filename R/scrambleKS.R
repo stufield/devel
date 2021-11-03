@@ -1,4 +1,3 @@
-
 #' Scramble KS-distances
 #'
 #' Class scrambling of the \code{Response} variable and recalculate
@@ -33,7 +32,7 @@
 #' perm <- scrambleKS(trdat, apts=getAptamers(trdat), verb=TRUE, random.seed=101) # 30s
 #' perm <- scrambleKS(trdat, apts=getAptamers(trdat), random.seed=101, MC=TRUE)   # 06s
 #' @importFrom parallel mclapply
-#' @export scrambleKS
+#' @export
 scrambleKS <- function(data, apts, response = "Response", nperm = 50,
                        do.plot = FALSE, random.seed = sample(1000, 1),
                        verbose = getOption("verbose"), MC = FALSE, cores = 7, ...) {
@@ -90,12 +89,8 @@ scrambleKS <- function(data, apts, response = "Response", nperm = 50,
   if ( do.plot ) {
     plot(ret, ...)
   }
-
   invisible(ret)
-
 }
-
-
 
 
 #' @describeIn scrambleKS

@@ -1,4 +1,3 @@
-
 #' Calculate Sign Test
 #'
 #' Calculates a simple sign test for paired data
@@ -22,11 +21,10 @@
 #' vec2[setdiff(1:20, s)] <- vec2[setdiff(1:20, s)] - 1
 #' sign.test(vec1, vec2)
 #' @importFrom stats binom.test
-#' @importFrom rlang signal
-#' @export sign_test
+#' @export
 sign_test <- function(x, y, ...) {
   if ( length(x) != length(y) ) {
-    rlang::signal("Two vectors `x` and `y` must be same length.", "error")
+    stop("Two vectors `x` and `y` must be same length.", call. = FALSE)
   }
   d <- x - y
   stats::binom.test(sum(d > 0), length(d), ...)

@@ -1,4 +1,3 @@
-
 #' Perform Robust PCA
 #'
 #' Need more description here, perhaps consult Mike Mehan on
@@ -23,8 +22,7 @@
 #'
 #' # Run until tolerance is reached & plot
 #' pca2 <- robustPCA(data, max.iter = 1000, verbose = TRUE)
-#' @importFrom stringr str_glue
-#' @export robustPCA
+#' @export
 robustPCA <- function(x, tolerance = 1e-07, max.iter = 250,
                       verbose = getOption("verbose")) {
 
@@ -45,7 +43,7 @@ robustPCA <- function(x, tolerance = 1e-07, max.iter = 250,
     S.cur  <- S.next
     Y.cur  <- Y.next
     curErr <- norm(x - L.cur - S.cur, type = "F")
-    message(stringr::str_glue("* Round: {iter} error: {curErr}"))
+    message("* Round: ", iter, " error: ", curErr)
     Err[iter] <- curErr
     iter <- iter + 1
   }
@@ -75,7 +73,6 @@ robustPCAsvdThresh <- function(x, tau) {
   x_svd$u %*% robustPCAshrinkage(diag(x_svd$d), tau) %*% t(x_svd$v)
 }
 
-
 #' Robust PCA Shrinkage
 #'
 #' @param x The "d" entry from an \code{\link{svd}} call.
@@ -86,4 +83,3 @@ robustPCAshrinkage <- function(x, tau) {
   x.shrink[ x.shrink < 0 ] <- 0
   x.sign * x.shrink
 }
-
