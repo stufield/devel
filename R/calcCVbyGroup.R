@@ -1,22 +1,23 @@
 #' Calculate CVs by Group
 #'
-#' Calculate CVs by a grouping variable, e.g. `SampleGroup`.
+#' Calculate CVs by a grouping variable, e.g. `SiteId`.
 #'
-#' @param data A `soma.adat` or `data.frame` object.
+#' @param data A `soma_adat` or `data.frame` object.
 #' @param field Character. The group variable used to split the data.
-#' @return Add return value here ...
+#' @return A tibble with rows as the %CV for each group, and
+#'   columns as analytes.
 #' @author Stu Field
 #' @examples
-#' calcCVbyField(sample.adat, "SampleGroup")
-#' @importFrom purrr map_df map_dbl
+#' calcCVbyGroup(sim_test_data, "SiteId")
+#' @importFrom dplyr bind_rows
 #' @export
 calcCVbyGroup <- function(data, group.var) {
-  data %>%
-    dplyr::select(getAptamers(.)) %>%    # no meta
-    split(data[[group.var]]) %>%         # split in to dfs by var
-    purrr::map_df(~ {                    # loop over dfs
-      vapply(.x, function(.y) {sd(.y) / mean(.y)}, 0.1)   # loop over apts
-    }) %>%
-    dplyr::mutate(AptName = getAptamers(data)) %>% # add back apt column
-    dplyr::select(AptName, dplyr::everything())    # move to 1st col
+  stopifnot(group.var %in% names(data))
+  # split into dfs by var
+  spl_df <- data[, getAnalytes(data)] |> split(data[[group.var]]) 
+  # loop over dfs
+  lapply(spl_df, function(.df) {
+    # loop over apts
+    vapply(.df, function(.x) {sd(.x) / mean(.x)}, double(1))
+  }) |> dplyr::bind_rows(.id = "Group")
 }
