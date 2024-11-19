@@ -36,12 +36,12 @@
 #' ica <- ICA(sample.adat, n.comp = 5)
 #' @export
 ICA <- function(data, n.comp, ...) {
-  if ( SomaReadr::is.soma_adat(data) ) {
-    data %<>% stripMeta()
+  if ( helpr:::is_soma_adat(data) ) {
+    data <- strip_meta(data)
   }
-  data.ica <- fastICA::fastICA(data, n.comp = n.comp, ...)
-  rot   <- t(data.ica$A)
-  proj  <- data.ica$S
+  data_ica <- fastICA::fastICA(data, n.comp = n.comp, ...)
+  rot   <- t(data_ica$A)
+  proj  <- data_ica$S
   comps <- paste0("IC", 1:n.comp)
   dimnames(rot)  <- list(colnames(data), comps)
   dimnames(proj) <- list(rownames(data), comps)
