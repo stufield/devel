@@ -22,15 +22,12 @@ Imports:
     graphics,
     crayon,
     cli,
-    lobstr
+    lobstr,
     dplyr (>= 1.0.0),
     ggplot2 (>= 3.3.0),
-    gridExtra,
     purrr (>= 0.3.3),
     rlang (>= 0.4.9),
     tibble (>= 3.0.1),
-    usethis (>= 2.0.0),
-    fs,
     withr
 Suggests:
     bench,
@@ -39,6 +36,7 @@ Suggests:
     knitr (>= 1.17),
     rmarkdown (>= 1.10),
     roxygen2 (>= 6.1.0),
+    patchwork,
     spelling (>= 1.2),
     testthat (>= 2.0.0),
     fastICA,

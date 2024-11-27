@@ -1,16 +1,17 @@
 #' Create Normalization Summary Table
 #'
 #' This function summarizes the normalization and calibration metrics
-#' into a table. It includes the plate normalization if performed
-#' and the hyb and med normalization scale factor ranges. This
-#' function is primarily used in the 3 plate reproducibility study
-#' experimental desin, but could be used for any normalized ADAT.
+#'   into a table. It includes the plate normalization if performed
+#'   and the hyb and med normalization scale factor ranges. This
+#'   function is primarily used in the 3 plate reproducibility study
+#'   experimental desin, but could be used for any normalized ADAT.
 #'
 #' @param A median normalizaed and calibrated ADAT, with multiple
-#' plates that have been calibrated into one data frame ("soma.adat").
+#'   plates that have been calibrated into one data frame ("soma.adat").
+#'
 #' @return A summary table of the calibration results
-#' @author **Stu Field**
-#' @seealso \code{\link[SomaNormalization]{sop.calibration}}
+#' @author Stu Field
+#'
 #' @examples
 #' \dontrun{
 #' createNormalizationSummaryTable(dat)
