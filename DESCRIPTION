@@ -16,7 +16,8 @@ Description: This "package" is the development package.
     into an existing package.
 License: GPL-3 | file LICENSE
 Depends:
-    R (>= 4.4.0)
+    R (>= 4.4.0),
+    helpr
 Imports:
     graphics,
     crayon,
@@ -30,7 +31,6 @@ Imports:
     tibble (>= 3.0.1),
     usethis (>= 2.0.0),
     fs,
-    VennDiagram,
     withr
 Suggests:
     bench,
