@@ -2,15 +2,19 @@
 #'
 #' Doesn't quite work right yet ...
 #'
-#' @param x A numeric vector of values
-#' @param alpha Significance level
+#' @param x `numeric(n)`. A vector of values.
+#' @param alpha `numeric(1)`. The significance level.
+#'
 #' @return return_value
+#'
 #' @note Ho: null hypothesis is that the data are symmetric:
-#' \code{x = c(17.4, 17.9, 17.6, 18.1, 17.6)}
+#'   `x = c(17.4, 17.9, 17.6, 18.1, 17.6)`
+#'
 #' @author Stu Field
+#'
 #' @references From Hollander & Wolfe (1999); NonParametric Statistical Methods, pg 87-91.
 #' @examples
-#'
+#' triples_test(rnorm(10))
 #' @export
 triples_test <- function(x, alpha = 0.05) {
 
@@ -41,12 +45,14 @@ triples_test <- function(x, alpha = 0.05) {
 
    print(Bt)
 
-   comb_iter_2 <- t(combn(n, 2))   # all n.choose.2 pairwise combos
+   comb_iter_2 <- t(combn(n, 2L))   # all n.choose.2 pairwise combos
    #print(dim(comb_iter_2))
    Bst <- sapply(seq(nrow(comb_iter_2)), function(i) {
-                 which.st <- apply(comb_iter, 1, function(x) all(comb_iter_2[i, ] %in% x))
-                 #print(Zi[ which.st ])
-                 sum(Zi[ which.st ])
+                 which_st <- apply(comb_iter, 1, function(x) {
+                                     all(comb_iter_2[i, ] %in% x)
+                 })
+                 #print(Zi[which_st])
+                 sum(Zi[which_st])
             })
 
    print(sum(Bst^2))
@@ -64,23 +70,19 @@ triples_test <- function(x, alpha = 0.05) {
   p <- 2 * pnorm(-abs(z))
 
   if ( p > alpha ) {
-    message("* Ho = TRUE; the data are symmetric ...")
+    signal_info("* Ho = TRUE; the data are symmetric ...")
   } else {
-    message("* Ho = FALSE; heavy tails detected ...")
+    signal_info("* Ho = FALSE; heavy tails detected ...")
   }
 
   data.frame(Zstat = z, p.value = p, Ho = p > alpha)
 
 }
 
-
-
-
-
 # David's version?
-test.triples.x <- function(x) {
+test_triples_x <- function(x) {
 
-   n=length(x)
+   n = length(x)
    TT = 0
    Tx = numeric(n)
    t = tic()
@@ -101,5 +103,4 @@ test.triples.x <- function(x) {
    print(toc(t))
    list(Total=TT, Tx=Tx, Txy=sum(Txy^2))
 }
-
 
