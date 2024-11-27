@@ -1,14 +1,15 @@
 #' Venn Diagram Plotting Routine
 #'
-#' A wrapper function for plotting Venn diagrams comprising 2 -> 5
-#' intersections.
+#' A wrapper function for plotting Venn diagrams
+#'   comprising 2 -> 5 intersections.
 #'
 #' @inheritParams VennDiagram::venn.diagram
 #' @inherit VennDiagram::venn.diagram details
 #' @inherit VennDiagram::venn.diagram details
+#'
 #' @param x A named list of vectors containing strings to match intersections.
 #' @param ... Additional arguments passed to the underlying plotting routine
-#' from [VennDiagram::venn.diagram()].
+#'   from [VennDiagram::venn.diagram()].
 #' @param edge.col describe
 #' @param num.cex describe
 #' @param colors describe
@@ -21,12 +22,17 @@
 #' @param cat.col describe
 #' @param cat.fontfamily describe
 #' @param rotation.degree Numeric (0-360). Rotation for the entire diagram.
+#'
 #' @return A `grob` class object which can be sent to a plotting device or
-#' printed to file with the `filename =` argument.
+#'   printed to file with the `filename =` argument.
+#'
 #' @note I stole this from the \pkg{VennDiagram} package.
+#'
 #' @author Stu Field
 #' @seealso [VennDiagram::venn.diagram()]
+#'
 #' @references See the \pkg{VennDiagram} package.
+#'
 #' @examples
 #' int_list <- lapply(1:3, function(...) sample(LETTERS[1:10], 6)) %>%
 #'   purrr::set_names(c("Larry", "Curly", "Mo"))
