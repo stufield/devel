@@ -3,38 +3,51 @@ Type: Package
 Title: R Development Scripts
 Version: 0.0.0.9999
 Authors@R: c(
-  person(given = "Stu",
-         family = "Field",
-         email = "stu.g.field@gmail.com",
-         role = c("aut", "cre"))
-  )
+    person(given = "Stu",
+           family = "Field",
+           role = c("aut", "cre", "cph"),
+           email = "stu.g.field@gmail.com",
+           comment = c(ORCID = "0000-0002-1024-5859"))
+    )
 Description: This "package" is the development package.
     Do not attempt to load it as you would a typical package.
     It contains a loose testing ground of functionality that,
     if deemed sufficiently useful, will eventually be migrated
     into an existing package.
 License: GPL-3 | file LICENSE
-Depends: R (>= 4.0.0)
+Depends:
+    R (>= 4.4.0)
 Imports:
-    dplyr,
     graphics,
-    fs,
     crayon,
     cli,
-    purrr,
-    stringr,
-    tibble,
     lobstr
+    dplyr (>= 1.0.0),
+    ggplot2 (>= 3.3.0),
+    gridExtra,
+    purrr (>= 0.3.3),
+    rlang (>= 0.4.9),
+    tibble (>= 3.0.1),
+    usethis (>= 2.0.0),
+    fs,
+    VennDiagram,
+    withr
 Suggests:
+    bench,
+    covr,
+    devtools (>= 2.0.1),
+    knitr (>= 1.17),
+    rmarkdown (>= 1.10),
+    roxygen2 (>= 6.1.0),
+    spelling (>= 1.2),
+    testthat (>= 2.0.0),
     fastICA,
-    testthat,
-    knitr,
-    car
+VignetteBuilder: 
+    knitr
 LazyLoad: true
 LazyData: true
 Language: en-US
 URL: www.somalogic.com
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.1
 Encoding: UTF-8
-VignetteBuilder: knitr

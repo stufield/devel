@@ -10,16 +10,30 @@ RCMD = R --vanilla CMD
 RSCRIPT = Rscript --vanilla
 
 
-all: roxygen check clean
+all: check clean
+roxygen: docs
 
-roxygen:
+docs:
+	@ $(RSCRIPT) -e "roxygen2::roxygenise(roclets = c('collate', 'namespace', 'rd'))"
+
+readme:
+	@ echo "Rendering README.Rmd"
 	@ $(RSCRIPT) \
-	-e "devtools::document(roclets = c('rd', 'collate', 'namespace'))"
+	-e "Sys.setenv(RSTUDIO_PANDOC='/Applications/RStudio.app/Contents/Resources/app/quarto/bin/tools')" \
+	-e "options(cli.width = 80L)" \
+	-e "rmarkdown::render('README.Rmd', quiet = TRUE)"
+	@ $(RM) README.html
 
 test:
 	@ $(RSCRIPT) \
-	-e "Sys.setenv(ON_JENKINS = 'true', TZ = 'America/Denver')" \
-	-e "devtools::test(reporter = 'check', stop_on_failure = TRUE)"
+	-e "Sys.setenv(TZ = 'America/Denver')" \
+	-e "devtools::test(reporter = 'summary', stop_on_failure = TRUE)"
+
+test_file:
+	@ $(RSCRIPT) \
+	-e "Sys.setenv(TZ = 'America/Denver', NOT_CRAN = 'true')" \
+	-e "devtools::load_all()" \
+	-e "testthat::test_file('$(FILE)', reporter = 'progress', stop_on_failure = TRUE)"
 
 build: roxygen
 	@ cd ..;\
@@ -32,14 +46,12 @@ check: build
 	@ cd ..;\
 	$(RCMD) check --no-manual $(PKGNAME)_$(PKGVERS).tar.gz
 
-install_deps:
-	@ $(RSCRIPT) \
-	-e "if (!requireNamespace('remotes')) install.packages('remotes')" \
-	-e "remotes::install_deps(dependencies = TRUE)"
+accept_snapshots:
+	@ Rscript -e "testthat::snapshot_accept()"
 
-install: install_deps build
-	@ R CMD INSTALL --use-vanilla --resave-data $(PKGNAME)_$(PKGVERS).tar.gz
+install:
+	@ R CMD INSTALL --use-vanilla --preclean --resave-data .
 
 clean:
 	@ cd ..;\
-	$(RM) -rf $(PKGNAME)_$(PKGVERS).tar.gz $(PKGNAME).Rcheck
+	$(RM) $(PKGNAME)_$(PKGVERS).tar.gz $(PKGNAME).Rcheck

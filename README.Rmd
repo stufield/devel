@@ -30,12 +30,12 @@ appropriate package.
 
 ## Installation
 
-You cannot currently install the `devel` library from the command line, as 
-it is not a package *per se*. The simplest way to obtain the functionality
-it contains is to load it using the `RStudio` `devtools::load_all()` shortcut.
+You cannot currently install the `devel` library from the command line, as it
+is not a package *per se*. The simplest way to obtain the functionality it
+contains is to load it using the `RStudio` `devtools::load_all()` shortcut.
 
 ```{r load}
-options(width = 110)
+options(width = 110L)
 
 devtools::load_all() # all objects, even non-exported, are accessible
 
@@ -47,12 +47,5 @@ ls("package:devel")
 
 #### LICENSE
 
-Please note that this SomaLogic, Inc. internal package is released with 
-a [LICENSE](LICENSE). By using in this package you agree to abide by its terms.
 
 
-----------
-
-
-Created by [Rmarkdown](https://github.com/rstudio/rmarkdown)
-(v`r utils::packageVersion("rmarkdown")`) and `r R.version$version.string`. 
