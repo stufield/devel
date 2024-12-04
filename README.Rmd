@@ -43,9 +43,3 @@ ls("package:devel")
 ```
 
 
-----------
-
-#### LICENSE
-
-
-
