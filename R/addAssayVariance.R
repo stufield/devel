@@ -3,7 +3,7 @@
 #' Add a CDF of the estimated assay variance via the Covance QC samples.
 #'
 #' @param apt `character(1)`. Which feature to add. This queries the
-#'   `splyr::mLod` object to obtain the median absolute deviation
+#'   `wranglr::mLod` object to obtain the median absolute deviation
 #'   (MAD) for that aptamer. Ignored if `mad` is passed directly.
 #' @param apt_median Numeric. The median value for the empirical values
 #'   to be plotted against. This is used to create a random normal of the

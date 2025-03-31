@@ -37,7 +37,7 @@
 #' @export
 ICA <- function(data, n.comp, ...) {
   if ( helpr:::is_soma_adat(data) ) {
-    data <- strip_meta(data)
+    data <- feature_matrix(data)
   }
   data_ica <- fastICA::fastICA(data, n.comp = n.comp, ...)
   rot   <- t(data_ica$A)

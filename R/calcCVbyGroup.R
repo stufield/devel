@@ -8,7 +8,7 @@
 #'   columns as analytes.
 #' @author Stu Field
 #' @examples
-#' calcCVbyGroup(sim_adat, "SiteId")
+#' calcCVbyGroup(simdata, "SiteId")
 #' @importFrom dplyr bind_rows
 #' @export
 calcCVbyGroup <- function(data, group.var) {
